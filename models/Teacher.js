@@ -31,6 +31,12 @@ module.exports = (sequelize, DataTypes) => {
 
   Teacher.associate = (models) => {
     Teacher.hasMany(models.Student, {
+      foriegnKey: "teacherId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
+    });
+    Teacher.hasMany(models.Student, {
+      foreignKey: "advisorTeacherId",
       onUpdate: "RESTRICT",
       onDelete: "RESTRICT",
     });

@@ -78,6 +78,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Work.associate = (models) => {
     Work.hasOne(models.Student, {
+      foreignKey: "workId",
       onUpdate: "RESTRICT",
       onDelete: "RESTRICT",
     });

@@ -1,5 +1,3 @@
-const Birth = require("./Birth");
-
 module.exports = (sequelize, DataTypes) => {
   const Student = sequelize.define(
     "Student",
@@ -40,10 +38,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      advisor: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
       idCardNumber: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -60,6 +54,44 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true,
     }
   );
+
+  Student.associate = (models) => {
+    Student.belongsTo(models.Address, {
+        foreignKey: "addressId",
+        onUpdate: "RESTRICT",
+        onDelete: "RESTRICT",
+    });
+    Student.belongsTo(models.Teacher, {
+        foreignKey: "advisorTeacherId",
+        onUpdate: "RESTRICT",
+        onDelete: "RESTRICT",
+    });
+    Student.belongsTo(models.Teacher, {
+        foreignKey: "teacherId",
+        onUpdate: "RESTRICT",
+        onDelete: "RESTRICT",
+    });
+    Student.belongsTo(models.Father, {
+        foreignKey: "fatherId",
+        onUpdate: "RESTRICT",
+        onDelete: "RESTRICT",
+    });
+    Student.belongsTo(models.Mother, {
+        foreignKey: "motherId",
+        onUpdate: "RESTRICT",
+        onDelete: "RESTRICT",
+    });
+    Student.belongsTo(models.Birth, {
+        foreignKey: "birthId",
+        onUpdate: "RESTRICT",
+        onDelete: "RESTRICT",
+    });
+    Student.belongsTo(models.Work, {
+        foreignKey: "workId",
+        onUpdate: "RESTRICT",
+        onDelete: "RESTRICT",
+    });
+};
 
   return Student;
 };

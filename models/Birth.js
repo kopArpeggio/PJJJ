@@ -49,6 +49,7 @@ module.exports = (sequelize, DataTypes) => {
 
   Birth.associate = (models) => {
     Birth.hasOne(models.Student, {
+      foreignKey: "birthId",
       onUpdate: "RESTRICT",
       onDelete: "RESTRICT",
     });
