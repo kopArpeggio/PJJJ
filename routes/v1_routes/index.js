@@ -1,4 +1,5 @@
 module.exports = {
   rootRouter: require("./rootRoute"),
-  studentRouter: require("./studentRoute")
+  studentRouter: require("./studentRoute"),
+  workplaceRouter: require("./workplaceRoute"),
 };

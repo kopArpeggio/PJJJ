@@ -41,6 +41,14 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
       onDelete: "RESTRICT",
     });
+
+    Address.hasOne(models.Work, {
+      foreignKey: "studentAddressId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
+    });
+
+  
   };
 
   return Address;

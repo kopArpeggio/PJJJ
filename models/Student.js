@@ -57,7 +57,12 @@ module.exports = (sequelize, DataTypes) => {
 
   Student.associate = (models) => {
     Student.belongsTo(models.Address, {
-        foreignKey: "addressId",
+        foreignKey: "oldAddressId",
+        onUpdate: "RESTRICT",
+        onDelete: "RESTRICT",
+    });
+    Student.belongsTo(models.Address, {
+        foreignKey: "newAddressId",
         onUpdate: "RESTRICT",
         onDelete: "RESTRICT",
     });
