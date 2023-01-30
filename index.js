@@ -1,9 +1,12 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
 app.use(express.json());
 app.use(cors());
 const Routes = require("./routes/Routes");
+
+const errorHandler = require("./middleware/errorHandler");
 
 // //Routers
 // const postRouter = require('./routes/Posts')
@@ -23,3 +26,5 @@ app.use("/api", Routes);
 app.listen(3001, () => {
   console.log("Server is running on port 3001");
 });
+
+app.use(errorHandler);

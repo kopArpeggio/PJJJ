@@ -14,6 +14,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      password: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       branch: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -57,46 +61,46 @@ module.exports = (sequelize, DataTypes) => {
 
   Student.associate = (models) => {
     Student.belongsTo(models.Address, {
-        foreignKey: "oldAddressId",
-        onUpdate: "RESTRICT",
-        onDelete: "RESTRICT",
+      foreignKey: "oldAddressId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
     });
     Student.belongsTo(models.Address, {
-        foreignKey: "newAddressId",
-        onUpdate: "RESTRICT",
-        onDelete: "RESTRICT",
+      foreignKey: "newAddressId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
     });
     Student.belongsTo(models.Teacher, {
-        foreignKey: "advisorTeacherId",
-        onUpdate: "RESTRICT",
-        onDelete: "RESTRICT",
+      foreignKey: "advisorTeacherId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
     });
     Student.belongsTo(models.Teacher, {
-        foreignKey: "teacherId",
-        onUpdate: "RESTRICT",
-        onDelete: "RESTRICT",
+      foreignKey: "teacherId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
     });
     Student.belongsTo(models.Father, {
-        foreignKey: "fatherId",
-        onUpdate: "RESTRICT",
-        onDelete: "RESTRICT",
+      foreignKey: "fatherId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
     });
     Student.belongsTo(models.Mother, {
-        foreignKey: "motherId",
-        onUpdate: "RESTRICT",
-        onDelete: "RESTRICT",
+      foreignKey: "motherId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
     });
     Student.belongsTo(models.Birth, {
-        foreignKey: "birthId",
-        onUpdate: "RESTRICT",
-        onDelete: "RESTRICT",
+      foreignKey: "birthId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
     });
     Student.belongsTo(models.Work, {
-        foreignKey: "workId",
-        onUpdate: "RESTRICT",
-        onDelete: "RESTRICT",
+      foreignKey: "workId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
     });
-};
+  };
 
   return Student;
 };

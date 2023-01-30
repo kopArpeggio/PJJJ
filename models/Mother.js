@@ -26,8 +26,8 @@ module.exports = (sequelize, DataTypes) => {
   Mother.associate = (models) => {
     Mother.hasOne(models.Student, {
       foreignKey: "motherId",
-      onUpdate: "RESTRICT",
-      onDelete: "RESTRICT",
+      onUpdate: "cascade",
+      onDelete: "cascade",
     });
   };
   return Mother;

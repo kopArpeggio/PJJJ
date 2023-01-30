@@ -1,11 +1,17 @@
-const { sequelize, Student, Address } = require("../../models");
+const { sequelize, Student, Address, Father, Mother } = require("../../models");
+const { Op } = require("sequelize");
+const bcrypt = require("bcryptjs");
 
 exports.getAllStudent = async (req, res, next) => {
   try {
-    const student = await Student.findAll({ include: Address });
-    res
-      .status(200)
-      .send({ message: "Get All Student Succesful !", data: student });
+    const student = await Student.findAll({
+      include: [Address, Father, Mother],
+    });
+    res.status(200).send({
+      message: "Get All Student Succesful !",
+      data: student,
+      whoUserThisFunction: req.user,
+    });
   } catch (error) {
     error.controller = "getAllStudent";
     next(error);
@@ -14,20 +20,55 @@ exports.getAllStudent = async (req, res, next) => {
 
 exports.createStudent = async (req, res, next) => {
   const t = await sequelize.transaction();
+  const { password, firstname, lastname } = req.body;
   try {
-    const address = await Address.create(
+    //check duplicate
+    const duplicate = await Student.findOne({
+      where: { [Op.and]: [{ firstname }, { lastname }] },
+    });
+
+    if (duplicate) {
+      const error = new Error("Student Duplicate.");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const father = await Father.create(
       {
-        ...req.body.address,
+        ...req.body.father,
       },
       {
         transaction: t,
       }
     );
-    console.log(address.id);
+
+    const mother = await Mother.create(
+      {
+        ...req.body.mother,
+      },
+      {
+        transaction: t,
+      }
+    );
+
+    const address = await Address.create(
+      {
+        ...req.body.newAddress,
+      },
+      {
+        transaction: t,
+      }
+    );
+
+    const hasedPassword = await bcrypt.hash(password, 10);
+
     const student = await Student.create(
       {
         ...req.body,
-        addressId: address.id,
+        newAddressId: address.id,
+        motherId: mother.id,
+        fatherId: father.id,
+        password: hasedPassword,
       },
       { transaction: t }
     );
@@ -47,19 +88,47 @@ exports.createStudent = async (req, res, next) => {
 exports.updateStudent = async (req, res, next) => {
   const { id } = req.params;
   const t = await sequelize.transaction();
+  const { password } = req.body;
+
   try {
     const student = await Student.findOne({
       where: { id },
     });
+
     if (!student) {
       const error = new Error("Student Not Found !");
       error.statusCode = 400;
       throw error;
     }
 
-    await Student.update(
+    if (password) {
+      const hasedpassword = bcrypt.hash(password, 10);
+
+      await Student.update(
+        {
+          ...req.body,
+          password: hasedpassword,
+        },
+        {
+          where: { id },
+          transaction: t,
+        }
+      );
+    } else {
+      await Student.update(
+        {
+          ...req.body,
+        },
+        {
+          where: { id },
+          transaction: t,
+        }
+      );
+    }
+
+    await Address.update(
       {
-        ...req.body,
+        ...req.body.address,
       },
       {
         where: { id },

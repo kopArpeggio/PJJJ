@@ -19,7 +19,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       zipCode: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(7),
         allowNull: false,
       },
     },
@@ -32,23 +32,16 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Address.associate = (models) => {
-    Address.hasOne(models.Student, {
-      onUpdate: "RESTRICT",
-      onDelete: "RESTRICT",
-    });
-
     Address.hasOne(models.Workplace, {
-      onUpdate: "RESTRICT",
-      onDelete: "RESTRICT",
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     });
 
     Address.hasOne(models.Work, {
       foreignKey: "studentAddressId",
-      onUpdate: "RESTRICT",
-      onDelete: "RESTRICT",
+      onUpdate: "CASCADE",
+      onDelete: "CASCADE",
     });
-
-  
   };
 
   return Address;
