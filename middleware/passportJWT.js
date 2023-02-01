@@ -23,7 +23,7 @@ passport.use(
 
       const workplace = await Workplace.findOne({ where: { id: req.id } });
       if (workplace) {
-        return res(null, {workplace, Role: "company"});
+        return res(null, { workplace, Role: "company" });
       }
 
       return res(new Error("User Not Found"), null);
