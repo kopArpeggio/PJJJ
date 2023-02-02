@@ -16,4 +16,5 @@ router.put("/update-by-id/:id", studentController.updateStudent);
 
 router.delete("/delete-by-id/:id", studentController.deleteStudent);
 
+
 module.exports = router;

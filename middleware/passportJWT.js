@@ -1,7 +1,14 @@
 const passport = require("passport");
 const JwtStrategy = require("passport-jwt").Strategy;
 const { ExtractJwt } = require("passport-jwt");
-const { Student, Teacher, Workplace } = require("../models");
+const {
+  Student,
+  Teacher,
+  Workplace,
+  Address,
+  Father,
+  Mother,
+} = require("../models");
 
 const opts = {};
 
@@ -11,9 +18,17 @@ opts.secretOrKey = process.env?.JWT_SECRET;
 passport.use(
   new JwtStrategy(opts, async (req, res) => {
     try {
-      const student = await Student.findOne({ where: { id: req.id } });
+      const student = await Student.findOne(
+        { include: [Address, Father, Mother] },
+        {
+          where: { id: req.id },
+        }
+      );
       if (student) {
-        return res(null, { student, Role: "student" });
+        return res(null, {
+          student,
+          Role: "student",
+        });
       }
 
       const teacher = await Teacher.findOne({ where: { id: req.id } });

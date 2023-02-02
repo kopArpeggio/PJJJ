@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: false,
       },
+      documentStatus: {
+        type: DataTypes.ENUM("1", "2", "3", "4"),
+        defaultValue: "1",
+      },
     },
     {
       tableName: "student",

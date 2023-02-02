@@ -7,12 +7,10 @@ const jwt = require("jsonwebtoken");
 
 exports.test = async (req, res, next) => {
   try {
-    res
-      .status(200)
-      .send({
-        message: "connect to controller and Route Succesful!",
-        data: req,
-      });
+    res.status(200).send({
+      message: "connect to controller and Route Succesful!",
+      data: req.user,
+    });
   } catch (error) {
     error.controller = "test";
     next(error);

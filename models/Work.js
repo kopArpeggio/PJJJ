@@ -62,6 +62,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("1", "2", "3"),
         allowNull: false,
       },
+      workingStatus: {
+        type: DataTypes.ENUM("1", "2", "3"),
+        allowNull: false,
+        defaultValue: "1",
+      },
+      startAt: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+      },
       status: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

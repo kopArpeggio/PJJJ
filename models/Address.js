@@ -22,6 +22,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(7),
         allowNull: false,
       },
+      latitude: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      longtitude: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
     },
     {
       tableName: "address",
