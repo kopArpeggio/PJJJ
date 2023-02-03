@@ -1,5 +1,6 @@
 const { sequelize, Workplace } = require("../../models");
 const { Op } = require("sequelize");
+const bcrypt = require("bcryptjs");
 
 exports.getAllWorkplace = async (req, res, next) => {
   try {
@@ -15,11 +16,15 @@ exports.getAllWorkplace = async (req, res, next) => {
 };
 
 exports.createWorkPlace = async (req, res, next) => {
-  const t = sequelize.transaction();
+  const t = await sequelize.transaction();
+  const { password } = req.body;
   try {
+    const hasedPassword = await bcrypt.hash(password, 10);
+
     const workplace = await Workplace.create(
       {
         ...req.body,
+        password: hasedPassword,
       },
       {
         transaction: t,
