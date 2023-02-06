@@ -9,6 +9,7 @@ const {
   Address,
   Father,
   Mother,
+  Birth,
 } = require("../models");
 
 const opts = {};
@@ -24,7 +25,7 @@ passport.use(
 
       if (stuNo) {
         const student = await Student.findOne({
-          include: [Address, Father, Mother],
+          include: [Address, Father, Mother, Birth],
           where: { [Op.and]: [{ stuNo }, { id }] },
         });
         if (student) {

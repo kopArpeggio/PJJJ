@@ -1,11 +1,18 @@
-const { sequelize, Student, Address, Father, Mother } = require("../../models");
+const {
+  sequelize,
+  Student,
+  Address,
+  Father,
+  Mother,
+  Birth,
+} = require("../../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 
 exports.getAllStudent = async (req, res, next) => {
   try {
     const student = await Student.findAll({
-      include: [Address, Father, Mother],
+      include: [Address, Father, Mother, Birth],
     });
     res.status(200).send({
       message: "Get All Student Succesful !",
@@ -32,6 +39,15 @@ exports.createStudent = async (req, res, next) => {
       error.statusCode = 400;
       throw error;
     }
+
+    const birth = await Birth.create(
+      {
+        ...req.body.birth,
+      },
+      {
+        transaction: t,
+      }
+    );
 
     const father = await Father.create(
       {
@@ -65,6 +81,7 @@ exports.createStudent = async (req, res, next) => {
     const student = await Student.create(
       {
         ...req.body,
+        birthId: birth.id,
         newAddressId: address.id,
         motherId: mother.id,
         fatherId: father.id,
