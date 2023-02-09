@@ -109,7 +109,7 @@ exports.createStudent = async (req, res, next) => {
 
     const address = await Address.create(
       {
-        ...req.body.newAddress,
+        ...req.body.oldAddress,
       },
       {
         transaction: t,
@@ -146,7 +146,7 @@ exports.createStudent = async (req, res, next) => {
 exports.updateStudent = async (req, res, next) => {
   const { id } = req.params;
   const t = await sequelize.transaction();
-  const { password } = req.body;
+  const { password, father, mother, birth, newAddress } = req.body;
 
   try {
     const student = await Student.findOne({
@@ -159,34 +159,65 @@ exports.updateStudent = async (req, res, next) => {
       throw error;
     }
 
-    if (password) {
-      const hasedpassword = bcrypt.hash(password, 10);
+    const updateBody = {
+      ...req.body,
+    };
 
-      await Student.update(
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      updateBody.password = hashedPassword;
+    }
+
+    if (newAddress) {
+      const address = await Address.create(
         {
-          ...req.body,
-          password: hasedpassword,
+          ...req.body.newAddress,
         },
         {
-          where: { id },
           transaction: t,
         }
       );
-    } else {
-      await Student.update(
+
+      updateBody.newAddressId = address.id;
+    }
+
+    if (birth) {
+      await Birth.update(
         {
-          ...req.body,
+          ...req.body.birth,
         },
         {
-          where: { id },
+          where: { id: req.body.birth.id },
+          transaction: t,
+        }
+      );
+    }
+    if (father) {
+      await Father.update(
+        {
+          ...req.body.father,
+        },
+        {
+          where: { id: req.body.father.id },
+          transaction: t,
+        }
+      );
+    }
+    if (mother) {
+      await Mother.update(
+        {
+          where: { id: req.body.mother.id },
+          ...req.body.mother,
+        },
+        {
           transaction: t,
         }
       );
     }
 
-    await Address.update(
+    await Student.update(
       {
-        ...req.body.address,
+        ...updateBody,
       },
       {
         where: { id },

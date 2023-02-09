@@ -1,9 +1,10 @@
 const express = require("express");
 const { workplaceController } = require("../../controllers");
+const passportJWT = require("../../middleware/passportJWT");
 
 const router = express.Router();
 
-router.get("/get-all-workplace", workplaceController.getAllWorkplace);
+router.get("/get-all-workplace",[passportJWT.isLogin], workplaceController.getAllWorkplace);
 
 router.post("/create", workplaceController.createWorkPlace);
 

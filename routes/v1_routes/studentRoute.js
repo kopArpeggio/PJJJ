@@ -12,9 +12,12 @@ router.get(
 
 router.post("/create", studentController.createStudent);
 
-router.put("/update-by-id/:id", studentController.updateStudent);
+router.put(
+  "/update-by-id/:id",
+  [passportJWT.isLogin],
+  studentController.updateStudent
+);
 
 router.delete("/delete-by-id/:id", studentController.deleteStudent);
-
 
 module.exports = router;

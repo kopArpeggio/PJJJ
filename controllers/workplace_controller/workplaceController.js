@@ -1,10 +1,32 @@
-const { sequelize, Workplace } = require("../../models");
+const { sequelize, Workplace, Address } = require("../../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 
 exports.getAllWorkplace = async (req, res, next) => {
   try {
-    const workplace = await Workplace.findAll();
+    const workplace = await Workplace.findAll({
+      include: [{ model: Address, attributes: [] }],
+      attributes: {
+        include: [
+          [sequelize.col("Address.house_number"), "houseNumber"],
+          [sequelize.col("Address.district"), "district"],
+          [sequelize.col("Address.amphoe"), "amphoe"],
+          [sequelize.col("Address.province"), "province"],
+          [sequelize.col("Address.zip_code"), "zipCode"],
+          [sequelize.col("Address.latitude"), "latitude"],
+          [sequelize.col("Address.longtitude"), "longtitude"],
+        ],
+        exclude: [
+          "password",
+          "AddressId",
+          "addressId",
+          "username",
+          "updatedAt",
+          "deletedAt",
+          "createdAt",
+        ],
+      },
+    });
 
     res
       .status(200)
