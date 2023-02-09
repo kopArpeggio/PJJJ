@@ -91,6 +91,11 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
       onDelete: "RESTRICT",
     });
+    Work.belongsTo(models.Workplace, {
+      foreignKey: "WorkplaceId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
+    });
   };
 
   return Work;

@@ -31,6 +31,12 @@ module.exports = (sequelize, DataTypes) => {
 
   Workplace.associate = (models) => {
     Workplace.hasOne(models.Work, {
+      foreignKey: "workplaceId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
+    });
+    Workplace.belongsTo(models.Address, {
+      foreignKey: "addressId",
       onUpdate: "RESTRICT",
       onDelete: "RESTRICT",
     });

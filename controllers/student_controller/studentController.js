@@ -5,14 +5,45 @@ const {
   Father,
   Mother,
   Birth,
+  Work,
+  Workplace,
 } = require("../../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
+// const Workplace = require("../../models/Workplace");
 
 exports.getAllStudent = async (req, res, next) => {
   try {
     const student = await Student.findAll({
-      include: [Address, Father, Mother, Birth],
+      include: [
+        {
+          model: Address,
+        },
+        {
+          model: Father,
+        },
+        {
+          model: Mother,
+        },
+        {
+          model: Birth,
+        },
+        {
+          model: Work,
+          include: [
+            {
+              model: Workplace,
+              include: [
+                {
+                  model: Address,
+                },
+              ],
+            },
+          ],
+        },
+
+        // { include: [{ model: Work }] },
+      ],
     });
     res.status(200).send({
       message: "Get All Student Succesful !",
@@ -39,6 +70,15 @@ exports.createStudent = async (req, res, next) => {
       error.statusCode = 400;
       throw error;
     }
+
+    const work = await Work.create(
+      {
+        ...req.body.work,
+      },
+      {
+        transaction: t,
+      }
+    );
 
     const birth = await Birth.create(
       {
@@ -81,6 +121,7 @@ exports.createStudent = async (req, res, next) => {
     const student = await Student.create(
       {
         ...req.body,
+        workId: work.id,
         birthId: birth.id,
         newAddressId: address.id,
         motherId: mother.id,
