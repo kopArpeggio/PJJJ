@@ -54,6 +54,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("1", "2", "3", "4"),
         defaultValue: "1",
       },
+      filePdfPath: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
     },
     {
       tableName: "student",

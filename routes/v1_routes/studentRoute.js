@@ -20,4 +20,6 @@ router.put(
 
 router.delete("/delete-by-id/:id", studentController.deleteStudent);
 
+router.put("/upload-pdf-file", studentController.uploadPdfFile);
+
 module.exports = router;

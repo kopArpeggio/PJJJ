@@ -2,10 +2,12 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const fileUpload = require("express-fileupload");
+
 app.use(express.json());
 app.use(cors());
-const Routes = require("./routes/Routes");
 
+const Routes = require("./routes/Routes");
 const errorHandler = require("./middleware/errorHandler");
 
 // //Routers
@@ -20,7 +22,7 @@ const errorHandler = require("./middleware/errorHandler");
 
 // const userRouter = require('./routes/Users')
 // app.use("/users",userRouter)
-
+app.use(fileUpload());
 app.use("/api", Routes);
 
 app.listen(3001, () => {

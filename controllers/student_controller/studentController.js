@@ -10,7 +10,6 @@ const {
 } = require("../../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
-// const Workplace = require("../../models/Workplace");
 
 exports.getAllStudent = async (req, res, next) => {
   try {
@@ -259,6 +258,29 @@ exports.deleteStudent = async (req, res, next) => {
   } catch (error) {
     await t.rollback();
     error.controller = "deleteStudent";
+    next(error);
+  }
+};
+
+exports.uploadPdfFile = async (req, res, next) => {
+  const t = await sequelize.transaction();
+  try {
+    await Student.update(
+      {
+        filePdfPath: req.file.path,
+      },
+      {
+        transaction: t,
+        where: { id: 1 },
+      }
+    );
+
+    await t.commit();
+
+    res.status(200).send({ message: "Upload Document Succesful." });
+  } catch (error) {
+    await t.rollback();
+    error.controller = "uploadPdfFile";
     next(error);
   }
 };

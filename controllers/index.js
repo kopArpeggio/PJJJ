@@ -3,4 +3,5 @@ module.exports = {
   studentController: require("./student_controller/studentController"),
   workplaceController: require("./workplace_controller/workplaceController"),
   teacherController: require("./teacher_controller/teacherController"),
+  uploadController: require("./upload_file_controller/uploadFileController"),
 };

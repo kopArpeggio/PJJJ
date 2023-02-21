@@ -3,4 +3,5 @@ module.exports = {
   studentRouter: require("./studentRoute"),
   workplaceRouter: require("./workplaceRoute"),
   teacherRouter: require("./teacherRoute"),
+  uploadRouter: require("./uploadRoute"),
 };
