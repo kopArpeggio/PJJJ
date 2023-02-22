@@ -153,8 +153,6 @@ exports.updateStudent = async (req, res, next) => {
   const { stu, work, mother, father, birth, newAddress, latlong } = req.body;
   const { password } = req.body.stu;
 
-  console.log(latlong);
-
   try {
     const student = await Student.findOne({
       where: { id },
@@ -178,8 +176,7 @@ exports.updateStudent = async (req, res, next) => {
     };
 
     if (newAddress) {
-      const { id } = newAddress;
-      if (!id) {
+      if (!newAddress?.id) {
         const address = await Address.create(
           {
             ...updateBodyAddress,
@@ -195,15 +192,14 @@ exports.updateStudent = async (req, res, next) => {
           ...updateBodyAddress,
         },
         {
-          where: { id },
+          where: { id: newAddress?.id },
           transaction: t,
         }
       );
     }
 
     if (birth) {
-      const { id } = birth;
-      if (!id) {
+      if (!birth?.id) {
         const birth = await Birth.create(
           {
             ...birth,
@@ -219,15 +215,14 @@ exports.updateStudent = async (req, res, next) => {
           ...birth,
         },
         {
-          where: { id: birth.id },
+          where: { id: birth?.id },
           transaction: t,
         }
       );
     }
 
     if (father) {
-      const { id } = father;
-      if (!id) {
+      if (!father?.id) {
         const father = await Father.create(
           {
             ...father,
@@ -236,22 +231,21 @@ exports.updateStudent = async (req, res, next) => {
             transaction: t,
           }
         );
-        stu.fatherId = father.id;
+        stu.fatherId = father?.id;
       }
       await Father.update(
         {
           ...father,
         },
         {
-          where: { id: father.id },
+          where: { id: father?.id },
           transaction: t,
         }
       );
     }
 
     if (mother) {
-      const { id } = mother;
-      if (!id) {
+      if (!mother?.id) {
         const mother = await Mother.create(
           {
             ...birth,
@@ -260,22 +254,21 @@ exports.updateStudent = async (req, res, next) => {
             transaction: t,
           }
         );
-        stu.motherId = mother.id;
+        stu.motherId = mother?.id;
       }
       await Mother.update(
         {
           ...mother,
         },
         {
-          where: { id },
+          where: { id: mother?.id },
           transaction: t,
         }
       );
     }
 
     if (work) {
-      const { id } = work;
-      if (!id) {
+      if (!work?.id) {
         const work = await Work.create(
           {
             ...work,
@@ -291,7 +284,7 @@ exports.updateStudent = async (req, res, next) => {
           ...work,
         },
         {
-          where: { id },
+          where: { id: work?.id },
           transaction: t,
         }
       );
