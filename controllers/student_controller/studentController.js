@@ -17,6 +17,11 @@ exports.getAllStudent = async (req, res, next) => {
       include: [
         {
           model: Address,
+          as: "oldAddress",
+        },
+        {
+          model: Address,
+          as: "newAddress",
         },
         {
           model: Father,
@@ -120,11 +125,11 @@ exports.createStudent = async (req, res, next) => {
     const student = await Student.create(
       {
         ...req.body,
-        workId: work.id,
-        birthId: birth.id,
-        newAddressId: address.id,
-        motherId: mother.id,
-        fatherId: father.id,
+        workId: work?.id,
+        birthId: birth?.id,
+        oldAddressId: address?.id,
+        motherId: mother?.id,
+        fatherId: father?.id,
         password: hasedPassword,
       },
       { transaction: t }
@@ -145,7 +150,10 @@ exports.createStudent = async (req, res, next) => {
 exports.updateStudent = async (req, res, next) => {
   const { id } = req.params;
   const t = await sequelize.transaction();
-  const { password, father, mother, birth, newAddress } = req.body;
+  const { stu, work, mother, father, birth, newAddress, latlong } = req.body;
+  const { password } = req.body.stu;
+
+  console.log(latlong);
 
   try {
     const student = await Student.findOne({
@@ -158,57 +166,132 @@ exports.updateStudent = async (req, res, next) => {
       throw error;
     }
 
-    const updateBody = {
-      ...req.body,
-    };
-
     if (password) {
       const hashedPassword = await bcrypt.hash(password, 10);
-      updateBody.password = hashedPassword;
+      stu.password = hashedPassword;
     }
 
+    const updateBodyAddress = {
+      ...newAddress,
+      latitude: latlong?.latitude,
+      longtitude: latlong?.longtitude,
+    };
+
     if (newAddress) {
-      const address = await Address.create(
+      const { id } = newAddress;
+      if (!id) {
+        const address = await Address.create(
+          {
+            ...updateBodyAddress,
+          },
+          {
+            transaction: t,
+          }
+        );
+        stu.newAddressId = address.id;
+      }
+      await Address.update(
         {
-          ...req.body.newAddress,
+          ...updateBodyAddress,
         },
         {
+          where: { id },
           transaction: t,
         }
       );
-
-      updateBody.newAddressId = address.id;
     }
 
     if (birth) {
+      const { id } = birth;
+      if (!id) {
+        const birth = await Birth.create(
+          {
+            ...birth,
+          },
+          {
+            transaction: t,
+          }
+        );
+        stu.birthId = birth.id;
+      }
       await Birth.update(
         {
-          ...req.body.birth,
+          ...birth,
         },
         {
-          where: { id: req.body.birth.id },
+          where: { id: birth.id },
           transaction: t,
         }
       );
     }
+
     if (father) {
+      const { id } = father;
+      if (!id) {
+        const father = await Father.create(
+          {
+            ...father,
+          },
+          {
+            transaction: t,
+          }
+        );
+        stu.fatherId = father.id;
+      }
       await Father.update(
         {
-          ...req.body.father,
+          ...father,
         },
         {
-          where: { id: req.body.father.id },
+          where: { id: father.id },
           transaction: t,
         }
       );
     }
+
     if (mother) {
+      const { id } = mother;
+      if (!id) {
+        const mother = await Mother.create(
+          {
+            ...birth,
+          },
+          {
+            transaction: t,
+          }
+        );
+        stu.motherId = mother.id;
+      }
       await Mother.update(
         {
-          where: { id: req.body.mother.id },
-          ...req.body.mother,
+          ...mother,
         },
         {
+          where: { id },
+          transaction: t,
+        }
+      );
+    }
+
+    if (work) {
+      const { id } = work;
+      if (!id) {
+        const work = await Work.create(
+          {
+            ...work,
+          },
+          {
+            transaction: t,
+          }
+        );
+        stu.workId = work.id;
+      }
+      await Work.update(
+        {
+          ...work,
+        },
+        {
+          where: { id },
           transaction: t,
         }
       );
@@ -216,7 +299,7 @@ exports.updateStudent = async (req, res, next) => {
 
     await Student.update(
       {
-        ...updateBody,
+        ...stu,
       },
       {
         where: { id },

@@ -58,6 +58,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      profilePic: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
     },
     {
       tableName: "student",
@@ -69,11 +73,13 @@ module.exports = (sequelize, DataTypes) => {
 
   Student.associate = (models) => {
     Student.belongsTo(models.Address, {
+      as: "oldAddress",
       foreignKey: "oldAddressId",
       onUpdate: "RESTRICT",
       onDelete: "RESTRICT",
     });
     Student.belongsTo(models.Address, {
+      as: "newAddress",
       foreignKey: "newAddressId",
       onUpdate: "RESTRICT",
       onDelete: "RESTRICT",

@@ -29,6 +29,11 @@ passport.use(
           include: [
             {
               model: Address,
+              as: "oldAddress",
+            },
+            {
+              model: Address,
+              as: "newAddress",
             },
             {
               model: Father,
