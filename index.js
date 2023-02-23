@@ -3,6 +3,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
+const path = require("path");
 
 app.use(express.json());
 app.use(cors());
@@ -22,7 +23,27 @@ const errorHandler = require("./middleware/errorHandler");
 
 // const userRouter = require('./routes/Users')
 // app.use("/users",userRouter)
-app.use(fileUpload());
+
+app.use(
+  fileUpload({
+    limits: {
+      fileSize: 10000000,
+    },
+    abortOnLimit: true,
+    limitHandler: (req, res, next) => {
+      try {
+        const error = new Error("Your File is bigger than 10 MB.");
+        error.statusCode = 413;
+        throw error;
+      } catch (error) {
+        next(error);
+      }
+    },
+  })
+);
+
+app.use("/assets", express.static(path.join(__dirname, "assets")));
+
 app.use("/api", Routes);
 
 app.listen(3001, () => {

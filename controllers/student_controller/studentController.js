@@ -187,15 +187,18 @@ exports.updateStudent = async (req, res, next) => {
         );
         stu.newAddressId = address.id;
       }
-      await Address.update(
-        {
-          ...updateBodyAddress,
-        },
-        {
-          where: { id: newAddress?.id },
-          transaction: t,
-        }
-      );
+
+      if (newAddress?.id) {
+        await Address.update(
+          {
+            ...updateBodyAddress,
+          },
+          {
+            where: { id: newAddress?.id },
+            transaction: t,
+          }
+        );
+      }
     }
 
     if (birth) {
@@ -210,15 +213,17 @@ exports.updateStudent = async (req, res, next) => {
         );
         stu.birthId = birth.id;
       }
-      await Birth.update(
-        {
-          ...birth,
-        },
-        {
-          where: { id: birth?.id },
-          transaction: t,
-        }
-      );
+      if (birth?.id) {
+        await Birth.update(
+          {
+            ...birth,
+          },
+          {
+            where: { id: birth?.id },
+            transaction: t,
+          }
+        );
+      }
     }
 
     if (father) {
@@ -233,15 +238,18 @@ exports.updateStudent = async (req, res, next) => {
         );
         stu.fatherId = father?.id;
       }
-      await Father.update(
-        {
-          ...father,
-        },
-        {
-          where: { id: father?.id },
-          transaction: t,
-        }
-      );
+
+      if (father?.id) {
+        await Father.update(
+          {
+            ...father,
+          },
+          {
+            where: { id: father?.id },
+            transaction: t,
+          }
+        );
+      }
     }
 
     if (mother) {
@@ -256,15 +264,18 @@ exports.updateStudent = async (req, res, next) => {
         );
         stu.motherId = mother?.id;
       }
-      await Mother.update(
-        {
-          ...mother,
-        },
-        {
-          where: { id: mother?.id },
-          transaction: t,
-        }
-      );
+
+      if (mother?.id) {
+        await Mother.update(
+          {
+            ...mother,
+          },
+          {
+            where: { id: mother?.id },
+            transaction: t,
+          }
+        );
+      }
     }
 
     if (work) {
@@ -279,15 +290,18 @@ exports.updateStudent = async (req, res, next) => {
         );
         stu.workId = work.id;
       }
-      await Work.update(
-        {
-          ...work,
-        },
-        {
-          where: { id: work?.id },
-          transaction: t,
-        }
-      );
+
+      if (work?.id) {
+        await Work.update(
+          {
+            ...work,
+          },
+          {
+            where: { id: work?.id },
+            transaction: t,
+          }
+        );
+      }
     }
 
     await Student.update(
