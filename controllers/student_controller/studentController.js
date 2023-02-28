@@ -153,6 +153,7 @@ exports.updateStudent = async (req, res, next) => {
   const { stu, work, mother, father, birth, newAddress, latlong } = req.body;
   const { password } = req.body.stu;
 
+  console.log(newAddress);
   try {
     const student = await Student.findOne({
       where: { id },

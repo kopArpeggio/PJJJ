@@ -19,7 +19,7 @@ exports.test = async (req, res, next) => {
 
 exports.migrate = async (req, res, next) => {
   try {
-    db.sequelize.sync().then(() => {
+    db.sequelize.sync({ alter: true }).then(() => {
       res.status(200).send({ message: "Migrate Succesful" });
     });
   } catch (error) {

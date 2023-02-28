@@ -26,6 +26,7 @@ passport.use(
 
       if (stuNo) {
         const student = await Student.findOne({
+          attributes: { exclude: ["password"] },
           include: [
             {
               model: Address,

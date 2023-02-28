@@ -38,23 +38,23 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      advisorFirstname: {
+      contactorsFirstname: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      advisorLastname: {
+      contactorsLastname: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      advisorDepartment: {
+      contactorsDepartment: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      advisorPhoneNumber: {
+      contactorsPhoneNumber: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      advisorEmail: {
+      contactorsEmail: {
         type: DataTypes.STRING,
         allowNull: false,
       },
