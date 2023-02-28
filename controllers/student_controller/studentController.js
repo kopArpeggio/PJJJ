@@ -11,6 +11,56 @@ const {
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 
+exports.getSingleStudentById = async (req, res, next) => {
+  const { id } = req.params;
+  console.log(id);
+  try {
+    const student = await Student.findOne({
+      where: { id },
+      include: [
+        {
+          model: Address,
+          as: "oldAddress",
+        },
+        {
+          model: Address,
+          as: "newAddress",
+        },
+        {
+          model: Father,
+        },
+        {
+          model: Mother,
+        },
+        {
+          model: Birth,
+        },
+        {
+          model: Work,
+          include: [
+            {
+              model: Workplace,
+              include: [
+                {
+                  model: Address,
+                },
+              ],
+            },
+          ],
+        },
+      ],
+    });
+
+    res.status(200).send({
+      message: "Get Student By Id Succesful !",
+      data: student,
+    });
+  } catch (error) {
+    error.controller = "getSingleStudentById";
+    next(error);
+  }
+};
+
 exports.getAllStudent = async (req, res, next) => {
   try {
     const student = await Student.findAll({
