@@ -30,17 +30,21 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING(1),
         allowNull: false,
       },
+      year: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+      },
       gpa: {
         type: DataTypes.DECIMAL(11, 2),
         allowNull: false,
       },
       phoneNumber: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       idCardNumber: {
         type: DataTypes.STRING,
@@ -48,7 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       activity: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       documentStatus: {
         type: DataTypes.ENUM("1", "2", "3", "4"),

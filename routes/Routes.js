@@ -5,6 +5,7 @@ const {
   workplaceRouter,
   teacherRouter,
   uploadRouter,
+  workRouter,
 } = require("./v1_routes");
 
 const router = express.Router();
@@ -18,5 +19,7 @@ router.use("/workplace", workplaceRouter);
 router.use("/teacher", teacherRouter);
 
 router.use("/upload", uploadRouter);
+
+router.use("/work", workRouter);
 
 module.exports = router;

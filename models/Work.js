@@ -50,6 +50,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      contactorsPosition: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       contactorsPhoneNumber: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -60,6 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       contactStatus: {
         type: DataTypes.ENUM("1", "2", "3"),
+        defaultValue: "1",
         allowNull: false,
       },
       workingStatus: {

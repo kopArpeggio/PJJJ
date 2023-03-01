@@ -10,11 +10,11 @@ router.get(
   studentController.getAllStudent
 );
 
-router.get(
-  "/get-student-by-id/:id",
-  [passportJWT.isLogin],
-  studentController.getSingleStudentById
-);
+// router.get(
+//   "/get-student-by-id/:id",
+//   [passportJWT.isLogin],
+//   studentController.getSingleStudentById
+// );
 
 router.post("/create", studentController.createStudent);
 

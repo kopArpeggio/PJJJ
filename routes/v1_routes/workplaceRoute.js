@@ -4,7 +4,17 @@ const passportJWT = require("../../middleware/passportJWT");
 
 const router = express.Router();
 
-router.get("/get-all-workplace",[passportJWT.isLogin], workplaceController.getAllWorkplace);
+router.get(
+  "/get-all-workplace",
+  [passportJWT.isLogin],
+  workplaceController.getAllWorkplace
+);
+
+router.get(
+  "/get-workplace-by-id/:id",
+  [passportJWT.isLogin],
+  workplaceController.getWorkplaceById
+);
 
 router.post("/create", workplaceController.createWorkPlace);
 

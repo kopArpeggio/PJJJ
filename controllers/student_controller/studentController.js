@@ -11,59 +11,10 @@ const {
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 
-exports.getSingleStudentById = async (req, res, next) => {
-  const { id } = req.params;
-  console.log(id);
-  try {
-    const student = await Student.findOne({
-      where: { id },
-      include: [
-        {
-          model: Address,
-          as: "oldAddress",
-        },
-        {
-          model: Address,
-          as: "newAddress",
-        },
-        {
-          model: Father,
-        },
-        {
-          model: Mother,
-        },
-        {
-          model: Birth,
-        },
-        {
-          model: Work,
-          include: [
-            {
-              model: Workplace,
-              include: [
-                {
-                  model: Address,
-                },
-              ],
-            },
-          ],
-        },
-      ],
-    });
-
-    res.status(200).send({
-      message: "Get Student By Id Succesful !",
-      data: student,
-    });
-  } catch (error) {
-    error.controller = "getSingleStudentById";
-    next(error);
-  }
-};
-
 exports.getAllStudent = async (req, res, next) => {
   try {
     const student = await Student.findAll({
+      attributes: { exclude: ["password"] },
       include: [
         {
           model: Address,
@@ -125,15 +76,6 @@ exports.createStudent = async (req, res, next) => {
       throw error;
     }
 
-    const work = await Work.create(
-      {
-        ...req.body.work,
-      },
-      {
-        transaction: t,
-      }
-    );
-
     const birth = await Birth.create(
       {
         ...req.body.birth,
@@ -175,7 +117,6 @@ exports.createStudent = async (req, res, next) => {
     const student = await Student.create(
       {
         ...req.body,
-        workId: work?.id,
         birthId: birth?.id,
         oldAddressId: address?.id,
         motherId: mother?.id,
@@ -200,10 +141,22 @@ exports.createStudent = async (req, res, next) => {
 exports.updateStudent = async (req, res, next) => {
   const { id } = req.params;
   const t = await sequelize.transaction();
-  const { stu, work, mother, father, birth, newAddress, latlong } = req.body;
-  const { password } = req.body.stu;
+  const {
+    stu,
+    work,
+    mother,
+    father,
+    birthData,
+    newAddress,
+    latlong,
+    finalAddress,
+  } = req?.body;
 
-  console.log(newAddress);
+  var password;
+  if (req?.body?.stu?.password) {
+    password = req?.body?.stu?.password;
+  }
+
   try {
     const student = await Student.findOne({
       where: { id },
@@ -252,25 +205,25 @@ exports.updateStudent = async (req, res, next) => {
       }
     }
 
-    if (birth) {
-      if (!birth?.id) {
+    if (birthData) {
+      if (!birthData?.id) {
         const birth = await Birth.create(
           {
-            ...birth,
+            ...req.body.birthData,
           },
           {
             transaction: t,
           }
         );
-        stu.birthId = birth.id;
+        stu.birthId = birth?.id;
       }
-      if (birth?.id) {
+      if (birthData?.id) {
         await Birth.update(
           {
-            ...birth,
+            ...req.body.birthData,
           },
           {
-            where: { id: birth?.id },
+            where: { id: birthData?.id },
             transaction: t,
           }
         );
@@ -307,7 +260,7 @@ exports.updateStudent = async (req, res, next) => {
       if (!mother?.id) {
         const mother = await Mother.create(
           {
-            ...birth,
+            ...mother,
           },
           {
             transaction: t,
@@ -333,7 +286,8 @@ exports.updateStudent = async (req, res, next) => {
       if (!work?.id) {
         const work = await Work.create(
           {
-            ...work,
+            ...req?.body?.work,
+            workplaceId: finalAddress?.id,
           },
           {
             transaction: t,
@@ -345,7 +299,8 @@ exports.updateStudent = async (req, res, next) => {
       if (work?.id) {
         await Work.update(
           {
-            ...work,
+            ...req.body.work,
+            workplaceId: finalAddress?.id,
           },
           {
             where: { id: work?.id },

@@ -37,6 +37,43 @@ exports.getAllWorkplace = async (req, res, next) => {
   }
 };
 
+exports.getWorkplaceById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const workplace = await Workplace.findOne({
+      where: { id },
+      include: [{ model: Address, attributes: [] }],
+      attributes: {
+        include: [
+          [sequelize.col("Address.house_number"), "houseNumber"],
+          [sequelize.col("Address.district"), "district"],
+          [sequelize.col("Address.amphoe"), "amphoe"],
+          [sequelize.col("Address.province"), "province"],
+          [sequelize.col("Address.zip_code"), "zipCode"],
+          [sequelize.col("Address.latitude"), "latitude"],
+          [sequelize.col("Address.longtitude"), "longtitude"],
+        ],
+        exclude: [
+          "password",
+          "AddressId",
+          "addressId",
+          "username",
+          "updatedAt",
+          "deletedAt",
+          "createdAt",
+        ],
+      },
+    });
+
+    res
+      .status(200)
+      .send({ message: "Get Workplace By Id Succesful.", data: workplace });
+  } catch (error) {
+    error.controller = "getWorkplaceById";
+    next(error);
+  }
+};
+
 exports.createWorkPlace = async (req, res, next) => {
   const t = await sequelize.transaction();
   const { password } = req.body;
@@ -79,6 +116,8 @@ exports.updateWorkplace = async (req, res, next) => {
       error.statusCode = 400;
       throw error;
     }
+
+    
 
     //check Duplicate
     const duplicate = await Workplace.findOne({
