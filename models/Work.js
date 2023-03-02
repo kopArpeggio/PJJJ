@@ -4,11 +4,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       jobTitle: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       jobDetail: {
         type: DataTypes.TEXT,
-        allowNull: false,
+        allowNull: true,
       },
       benefit: {
         type: DataTypes.TEXT,
@@ -16,27 +16,27 @@ module.exports = (sequelize, DataTypes) => {
       },
       bossFirstname: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       bossLastname: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       bossPosition: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       bossDepartment: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       phoneNumber: {
         type: DataTypes.STRING(10),
-        allowNull: false,
+        allowNull: true,
       },
       email: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       contactorsFirstname: {
         type: DataTypes.STRING,
@@ -44,41 +44,41 @@ module.exports = (sequelize, DataTypes) => {
       },
       contactorsLastname: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       contactorsDepartment: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       contactorsPosition: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       contactorsPhoneNumber: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       contactorsEmail: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       contactStatus: {
         type: DataTypes.ENUM("1", "2", "3"),
         defaultValue: "1",
-        allowNull: false,
+        allowNull: true,
       },
       workingStatus: {
         type: DataTypes.ENUM("1", "2", "3"),
-        allowNull: false,
+        allowNull: true,
         defaultValue: "1",
       },
       startAt: {
         type: DataTypes.DATEONLY,
-        allowNull: false,
+        allowNull: true,
       },
       status: {
         type: DataTypes.BOOLEAN,
-        allowNull: false,
+        allowNull: true,
         defaultValue: 1,
       },
     },
