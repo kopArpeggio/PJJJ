@@ -32,7 +32,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       year: {
         type: DataTypes.STRING(20),
-        allowNull: true,
+        allowNull: false,
       },
       gpa: {
         type: DataTypes.DECIMAL(11, 2),

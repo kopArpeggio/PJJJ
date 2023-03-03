@@ -16,7 +16,7 @@ router.get(
 //   studentController.getSingleStudentById
 // );
 
-router.post("/create", studentController.createStudent);
+router.post("/create", [passportJWT.isLogin], studentController.createStudent);
 
 router.put(
   "/update-by-id/:id",
