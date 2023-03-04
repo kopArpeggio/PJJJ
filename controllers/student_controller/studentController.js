@@ -76,51 +76,64 @@ exports.createStudent = async (req, res, next) => {
       throw error;
     }
 
-    const birth = await Birth.create(
-      {
-        ...req.body.birth,
-      },
-      {
-        transaction: t,
-      }
-    );
+    const createBody = {
+      ...req.body,
+    };
 
-    const father = await Father.create(
-      {
-        ...req.body.father,
-      },
-      {
-        transaction: t,
-      }
-    );
+    if (req?.body?.birth) {
+      const birth = await Birth.create(
+        {
+          ...req.body.birth,
+        },
+        {
+          transaction: t,
+        }
+      );
+      createBody.birthId = birth.id;
+    }
 
-    const mother = await Mother.create(
-      {
-        ...req.body.mother,
-      },
-      {
-        transaction: t,
-      }
-    );
+    if (req?.body?.father) {
+      const father = await Father.create(
+        {
+          ...req.body.father,
+        },
+        {
+          transaction: t,
+        }
+      );
+      createBody.fatherId = father.id;
+    }
 
-    const address = await Address.create(
-      {
-        ...req.body.oldAddress,
-      },
-      {
-        transaction: t,
-      }
-    );
+    if (req?.body?.mother) {
+      const mother = await Mother.create(
+        {
+          ...req.body.mother,
+        },
+        {
+          transaction: t,
+        }
+      );
+
+      createBody.motherId = mother.id;
+    }
+
+    if (req?.body?.oldAddress) {
+      const address = await Address.create(
+        {
+          ...req.body.oldAddress,
+        },
+        {
+          transaction: t,
+        }
+      );
+      createBody.oldAddressId = address.id;
+    }
 
     const hasedPassword = await bcrypt.hash(password, 10);
 
     const student = await Student.create(
       {
-        ...req.body,
-        birthId: birth?.id,
-        oldAddressId: address?.id,
-        motherId: mother?.id,
-        fatherId: father?.id,
+        ...createBody,
         password: hasedPassword,
       },
       { transaction: t }
