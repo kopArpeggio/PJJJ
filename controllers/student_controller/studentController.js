@@ -335,7 +335,10 @@ exports.updateStudent = async (req, res, next) => {
 
     await t.commit();
 
-    res.status(200).send({ message: "Update Student By Id Succesful." });
+    res.status(200).send({
+      message: "Update Student By Id Succesful.",
+      data: { profilePic: stu?.profilePic },
+    });
   } catch (error) {
     await t.rollback();
     error.controller = "updateStudent";
@@ -345,7 +348,7 @@ exports.updateStudent = async (req, res, next) => {
 
 exports.deleteStudent = async (req, res, next) => {
   const t = await sequelize.transaction();
-  const { id } = req.params;
+  const { id } = req?.params;
   try {
     //check existing
     const student = await Student.findOne({ where: { id } });

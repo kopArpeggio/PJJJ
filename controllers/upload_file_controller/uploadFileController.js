@@ -1,9 +1,11 @@
-
 const uuidv4 = require("uuid");
+const fs = require("fs");
+const { Student } = require("../../models");
 
 exports.uploadFileImage = async (req, res, next) => {
   try {
-    const { image } = req.files;
+    const { image } = req?.files;
+    const { id } = req?.user?.student;
     // If no image submitted, exit
     if (!image) {
       const error = new Error("Doesn't have a file");
@@ -11,8 +13,21 @@ exports.uploadFileImage = async (req, res, next) => {
       throw error;
     }
 
+    const student = await Student.findOne({ where: { id } });
+    if (student?.profilePic) {
+      fs.unlink(
+        `${__dirname}/../../assets/img/${student?.profilePic}`,
+        (err) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+        }
+      );
+    }
+
     // If does not have image mime type prevent from uploading
-    // if (!/^image/.test(image.mimetype)) return res.sendStatus(400);
+    // if (!/^image/.test(image.mimetype)) return res.sendStatus(400)
 
     const ext = image.name.split(".");
     let filename = "";
@@ -26,19 +41,20 @@ exports.uploadFileImage = async (req, res, next) => {
       ext[1] == "png"
     ) {
       if (ext[1] == "jpg" || ext[1] == "jpeg" || ext[1] == "png") {
-        image.mv(`${__dirname}/../../assets/image/${filename}`);
+        image.mv(`${__dirname}/../../assets/img/${filename}`);
       }
       if (ext[1] == "pdf") {
         image.mv(`${__dirname}/../../assets/pdf/${filename}`);
       }
-      res.sendStatus(200);
+      res
+        .status(200)
+        .send({ message: "Upload File Succesful.", data: filename });
     }
 
-    res.status(400).send({ message: "Your File Should be JPG or PDF ONLY" });
+    // res.status(400).send({ message: "Your File Should be JPG or PDF ONLY" });
 
     // Move the uploaded image to our upload folder
   } catch (error) {
     next(error);
   }
 };
-

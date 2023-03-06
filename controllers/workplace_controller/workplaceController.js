@@ -19,8 +19,6 @@ exports.getAllWorkplace = async (req, res, next) => {
         exclude: [
           "password",
           "AddressId",
-          "addressId",
-          "username",
           "updatedAt",
           "deletedAt",
           "createdAt",
@@ -57,7 +55,6 @@ exports.getWorkplaceById = async (req, res, next) => {
           "password",
           "AddressId",
           "addressId",
-          "username",
           "updatedAt",
           "deletedAt",
           "createdAt",
@@ -76,14 +73,25 @@ exports.getWorkplaceById = async (req, res, next) => {
 
 exports.createWorkPlace = async (req, res, next) => {
   const t = await sequelize.transaction();
-  const { password } = req.body;
+  const { password } = req?.body;
+
   try {
     const hasedPassword = await bcrypt.hash(password, 10);
+
+    const createdAddress = await Address.create(
+      {
+        ...req.body,
+      },
+      {
+        transaction: t,
+      }
+    );
 
     const workplace = await Workplace.create(
       {
         ...req.body,
         password: hasedPassword,
+        addressId: createdAddress?.id,
       },
       {
         transaction: t,
@@ -103,38 +111,60 @@ exports.createWorkPlace = async (req, res, next) => {
 };
 
 exports.updateWorkplace = async (req, res, next) => {
-  const { id } = req.params;
-  const { companyName } = req.body;
+  const { id } = req?.params;
+  console.log(req.params.id);
+  const { password, companyName } = req?.body;
   const t = await sequelize.transaction();
   try {
     //check exiting
     const workplace = await Workplace.findOne({
       where: { id },
     });
+
     if (!workplace) {
       const error = new Error("Workplace Not Found.");
       error.statusCode = 400;
       throw error;
     }
 
-    
-
     //check Duplicate
     const duplicate = await Workplace.findOne({
-      where: { [Op.and]: [{ id: { [Op.ne]: id } }, { companyName }] },
+      where: {
+        [Op.and]: [{ id: { [Op.ne]: id } }, { companyName }],
+      },
     });
+
     if (duplicate) {
       const error = new Error("Workplace Duplicate.");
       error.statusCode = 400;
       throw error;
     }
 
-    await Workplace.update(
+    const updateWorkplaceBody = {
+      ...req.body,
+    };
+
+    console.log(updateWorkplaceBody);
+
+    if (password) {
+      updateWorkplaceBody.password = await bcrypt.hash(password, 10);
+    }
+
+    await Workplace.update(updateWorkplaceBody, {
+      where: { id },
+      transaction: t,
+    });
+
+    await Address.update(
       {
-        ...res.body,
+        district: updateWorkplaceBody?.district,
+        houseNumber: updateWorkplaceBody?.houseNumber,
+        amphoe: updateWorkplaceBody?.amphoe,
+        province: updateWorkplaceBody?.province,
+        zipCode: updateWorkplaceBody?.zipCode,
       },
       {
-        where: { id },
+        where: { id: updateWorkplaceBody?.addressId },
         transaction: t,
       }
     );
@@ -150,7 +180,7 @@ exports.updateWorkplace = async (req, res, next) => {
 };
 
 exports.deleteWorkplace = async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req?.params;
   const t = await sequelize.transaction();
   try {
     //check existing

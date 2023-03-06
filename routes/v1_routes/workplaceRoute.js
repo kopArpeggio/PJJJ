@@ -22,4 +22,5 @@ router.put("/update-by-id/:id", workplaceController.updateWorkplace);
 
 router.delete("/delete-by-id/:id", workplaceController.deleteWorkplace);
 
+
 module.exports = router;
