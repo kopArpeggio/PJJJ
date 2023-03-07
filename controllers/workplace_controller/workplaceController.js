@@ -145,7 +145,6 @@ exports.createWorkPlace = async (req, res, next) => {
 
 exports.updateWorkplace = async (req, res, next) => {
   const { id } = req?.params;
-  console.log(req.params.id);
   const { password, companyName } = req?.body;
   const t = await sequelize.transaction();
   try {
@@ -177,7 +176,6 @@ exports.updateWorkplace = async (req, res, next) => {
       ...req.body,
     };
 
-    console.log(updateWorkplaceBody);
 
     if (password) {
       updateWorkplaceBody.password = await bcrypt.hash(password, 10);

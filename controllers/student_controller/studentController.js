@@ -165,13 +165,12 @@ exports.updateStudent = async (req, res, next) => {
     finalAddress,
   } = req?.body;
 
-  let password;
-
-  if (req?.body?.stu?.password) {
-    password = req?.body?.stu?.password;
-  }
-
   try {
+    if (req?.body?.stu?.password) {
+      const hashedPassword = await bcrypt.hash(req?.body?.stu?.password, 10);
+      stu.password = hashedPassword;
+    }
+
     const student = await Student.findOne({
       where: { id },
     });
@@ -180,11 +179,6 @@ exports.updateStudent = async (req, res, next) => {
       const error = new Error("Student Not Found !");
       error.statusCode = 400;
       throw error;
-    }
-
-    if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      stu.password = hashedPassword;
     }
 
     const updateBodyAddress = {

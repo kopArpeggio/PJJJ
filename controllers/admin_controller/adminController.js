@@ -1,4 +1,4 @@
-const { sequelize, Teacher, Admin } = require("../../models");
+const { sequelize, Admin } = require("../../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 
@@ -7,7 +7,7 @@ exports.createAdmin = async (req, res, next) => {
   const t = await sequelize.transaction();
   try {
     //check duplicate
-    const duplicate = await Teacher.findOne({
+    const duplicate = await Admin.findOne({
       where: { [Op.and]: [{ firstname }, { lastname }] },
     });
     if (duplicate) {

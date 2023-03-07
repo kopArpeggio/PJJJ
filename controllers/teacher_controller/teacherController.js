@@ -4,7 +4,9 @@ const bcrypt = require("bcryptjs");
 
 exports.getAllTeacher = async (req, res, next) => {
   try {
-    const teachers = await Teacher.findAll();
+    const teachers = await Teacher.findAll({
+      attributes: { exclude: ["password"] },
+    });
 
     res.status(200).send({
       message: "Get All Teacher Succesful.",
