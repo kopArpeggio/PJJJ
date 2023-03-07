@@ -38,9 +38,15 @@ exports.uploadFileImage = async (req, res, next) => {
       ext[1] == "jpg" ||
       ext[1] == "pdf" ||
       ext[1] == "jpeg" ||
-      ext[1] == "png"
+      ext[1] == "png" ||
+      ext[1] == "PNG"
     ) {
-      if (ext[1] == "jpg" || ext[1] == "jpeg" || ext[1] == "png") {
+      if (
+        ext[1] == "jpg" ||
+        ext[1] == "jpeg" ||
+        ext[1] == "png" ||
+        ext[1] == "PNG"
+      ) {
         image.mv(`${__dirname}/../../assets/img/${filename}`);
       }
       if (ext[1] == "pdf") {
@@ -49,6 +55,10 @@ exports.uploadFileImage = async (req, res, next) => {
       res
         .status(200)
         .send({ message: "Upload File Succesful.", data: filename });
+    } else {
+      const error = new Error("Your File Type is a not supported to system");
+      error.statusCode = "400";
+      throw error;
     }
 
     // res.status(400).send({ message: "Your File Should be JPG or PDF ONLY" });

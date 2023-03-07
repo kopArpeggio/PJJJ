@@ -5,4 +5,5 @@ module.exports = {
   teacherRouter: require("./teacherRoute"),
   uploadRouter: require("./uploadRoute"),
   workRouter: require("./workRoute"),
+  adminRouter: require("./adminRoute"),
 };

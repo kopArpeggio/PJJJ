@@ -17,9 +17,10 @@ exports.getAllTeacher = async (req, res, next) => {
 };
 
 exports.createTeacher = async (req, res, next) => {
-  const { firstname, lastname, password } = req.body;
+  const { firstname, lastname, password } = req?.body;
   const t = await sequelize.transaction();
   try {
+    console.log(req?.body);
     //check duplicate
     const duplicate = await Teacher.findOne({
       where: { [Op.and]: [{ firstname }, { lastname }] },

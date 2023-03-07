@@ -11,6 +11,7 @@ const {
   Mother,
   Birth,
   Work,
+  Admin,
 } = require("../models");
 
 const opts = {};
@@ -74,6 +75,13 @@ passport.use(
       });
       if (teacher) {
         return res(null, { teacher, Role: "teacher" });
+      }
+
+      const admin = await Admin.findOne({
+        where: { [Op.and]: [{ username }, { id }] },
+      });
+      if (admin) {
+        return res(null, { admin, Role: "admin" });
       }
 
       const workplace = await Workplace.findOne({

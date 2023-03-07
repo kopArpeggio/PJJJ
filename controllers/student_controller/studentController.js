@@ -165,7 +165,8 @@ exports.updateStudent = async (req, res, next) => {
     finalAddress,
   } = req?.body;
 
-  var password;
+  let password;
+
   if (req?.body?.stu?.password) {
     password = req?.body?.stu?.password;
   }

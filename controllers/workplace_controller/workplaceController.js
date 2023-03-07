@@ -34,6 +34,39 @@ exports.getAllWorkplace = async (req, res, next) => {
     next(error);
   }
 };
+exports.getAllWorkplaceWithStatus = async (req, res, next) => {
+  try {
+    const workplace = await Workplace.findAll({
+      where: { status: true },
+      include: [{ model: Address, attributes: [] }],
+      attributes: {
+        include: [
+          [sequelize.col("Address.house_number"), "houseNumber"],
+          [sequelize.col("Address.district"), "district"],
+          [sequelize.col("Address.amphoe"), "amphoe"],
+          [sequelize.col("Address.province"), "province"],
+          [sequelize.col("Address.zip_code"), "zipCode"],
+          [sequelize.col("Address.latitude"), "latitude"],
+          [sequelize.col("Address.longtitude"), "longtitude"],
+        ],
+        exclude: [
+          "password",
+          "AddressId",
+          "updatedAt",
+          "deletedAt",
+          "createdAt",
+        ],
+      },
+    });
+
+    res
+      .status(200)
+      .send({ message: "Get All Workplace Succesful.", data: workplace });
+  } catch (error) {
+    error.controller = "getAllWorkplace";
+    next(error);
+  }
+};
 
 exports.getWorkplaceById = async (req, res, next) => {
   const { id } = req.params;
