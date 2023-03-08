@@ -18,14 +18,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      branch: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      faculty: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+
       yearClass: {
         type: DataTypes.STRING(1),
         allowNull: false,
@@ -76,6 +69,11 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Student.associate = (models) => {
+    Student.belongsTo(models.Branch, {
+      foreignKey: "branchId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
+    });
     Student.belongsTo(models.Address, {
       as: "oldAddress",
       foreignKey: "oldAddressId",

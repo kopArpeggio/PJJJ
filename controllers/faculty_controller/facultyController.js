@@ -16,7 +16,7 @@ exports.getAllFaculty = async (req, res, next) => {
 
 exports.getAllFacultyByStatus = async (req, res, next) => {
   try {
-    const faculty = await Faculty.findAll({ status: true });
+    const faculty = await Faculty.findAll({ where: { status: true } });
 
     res
       .status(200)

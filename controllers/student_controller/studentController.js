@@ -6,7 +6,9 @@ const {
   Mother,
   Birth,
   Work,
+  Branch,
   Workplace,
+  Faculty,
 } = require("../../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
@@ -14,7 +16,13 @@ const bcrypt = require("bcryptjs");
 exports.getAllStudent = async (req, res, next) => {
   try {
     const student = await Student.findAll({
-      attributes: { exclude: ["password"] },
+      attributes: {
+        exclude: ["password"],
+        include: [
+          [sequelize.col("Branch.branch_name"), "branchName"],
+          [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
+        ],
+      },
       include: [
         {
           model: Address,
@@ -33,6 +41,12 @@ exports.getAllStudent = async (req, res, next) => {
         {
           model: Birth,
         },
+        {
+          model: Branch,
+          // attributes: [],
+          include: [{ model: Faculty }],
+        },
+
         {
           model: Work,
           include: [
@@ -184,7 +198,11 @@ exports.updateStudent = async (req, res, next) => {
     //check duplicate
     const duplicate = await Student.findOne({
       where: {
-        [Op.and]: [{ ...req.body.stu.firstname }, { ...req.body.stu.lastname }],
+        [Op.and]: [
+          { firstname: req?.body?.stu?.firstname },
+          { lastname: req?.body?.stu?.lastname },
+          { id: { [Op.ne]: id } },
+        ],
       },
     });
 
@@ -334,6 +352,7 @@ exports.updateStudent = async (req, res, next) => {
     await Student.update(
       {
         ...stu,
+        branchId: stu?.branchId,
       },
       {
         where: { id },
