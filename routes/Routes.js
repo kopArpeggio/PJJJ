@@ -7,6 +7,8 @@ const {
   uploadRouter,
   workRouter,
   adminRouter,
+  branchRouter,
+  facultyRouter,
 } = require("./v1_routes");
 
 const router = express.Router();
@@ -24,5 +26,9 @@ router.use("/upload", uploadRouter);
 router.use("/work", workRouter);
 
 router.use("/admin", adminRouter);
+
+router.use("/branch", branchRouter);
+
+router.use("/faculty", facultyRouter);
 
 module.exports = router;

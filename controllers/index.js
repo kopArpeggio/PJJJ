@@ -6,4 +6,6 @@ module.exports = {
   uploadController: require("./upload_file_controller/uploadFileController"),
   workController: require("./work_controller/workController"),
   adminController: require("./admin_controller/adminController"),
+  branchController: require("./brach_controller/branchController"),
+  facultyController: require("./faculty_controller/facultyController"),
 };

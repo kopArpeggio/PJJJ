@@ -6,4 +6,6 @@ module.exports = {
   uploadRouter: require("./uploadRoute"),
   workRouter: require("./workRoute"),
   adminRouter: require("./adminRoute"),
+  branchRouter: require("./branchRoute"),
+  facultyRouter: require("./facultyRoute"),
 };

@@ -22,7 +22,6 @@ exports.createTeacher = async (req, res, next) => {
   const { firstname, lastname, password } = req?.body;
   const t = await sequelize.transaction();
   try {
-    console.log(req?.body);
     //check duplicate
     const duplicate = await Teacher.findOne({
       where: { [Op.and]: [{ firstname }, { lastname }] },
@@ -74,7 +73,9 @@ exports.updateTeacher = async (req, res, next) => {
 
     //check duplicate
     const duplicate = await Teacher.findOne({
-      where: { [Op.and]: [{ firstname }, { lastname }] },
+      where: {
+        [Op.and]: [{ firstname }, { lastname }, { id: { [Op.ne]: id } }],
+      },
     });
     if (duplicate) {
       const error = new Error("Teacher Duplicate !");

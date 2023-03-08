@@ -6,9 +6,14 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      status: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: 1,
+      },
     },
     {
-      praranoid: true,
+      paranoid: true,
       timestamps: true,
       underscored: true,
       tableName: "faculty",

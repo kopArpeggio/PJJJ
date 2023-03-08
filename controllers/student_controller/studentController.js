@@ -181,6 +181,19 @@ exports.updateStudent = async (req, res, next) => {
       throw error;
     }
 
+    //check duplicate
+    const duplicate = await Student.findOne({
+      where: {
+        [Op.and]: [{ ...req.body.stu.firstname }, { ...req.body.stu.lastname }],
+      },
+    });
+
+    if (duplicate) {
+      const error = new Error("Student Duplicate.");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const updateBodyAddress = {
       ...newAddress,
       latitude: latlong?.latitude,
