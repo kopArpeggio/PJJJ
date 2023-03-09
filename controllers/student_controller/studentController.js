@@ -21,6 +21,7 @@ exports.getAllStudent = async (req, res, next) => {
         include: [
           [sequelize.col("Branch.branch_name"), "branchName"],
           [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
+          [sequelize.col("Branch.branch_name"), "branchName"],
         ],
       },
       include: [
@@ -196,15 +197,18 @@ exports.updateStudent = async (req, res, next) => {
     }
 
     //check duplicate
-    const duplicate = await Student.findOne({
-      where: {
-        [Op.and]: [
-          { firstname: req?.body?.stu?.firstname },
-          { lastname: req?.body?.stu?.lastname },
-          { id: { [Op.ne]: id } },
-        ],
-      },
-    });
+    let duplicate;
+    if (req?.body?.stu?.firstname && req?.body?.stu?.lastname) {
+      duplicate = await Student.findOne({
+        where: {
+          [Op.and]: [
+            { firstname: req?.body?.stu?.firstname },
+            { lastname: req?.body?.stu?.lastname },
+            { id: { [Op.ne]: id } },
+          ],
+        },
+      });
+    }
 
     if (duplicate) {
       const error = new Error("Student Duplicate.");

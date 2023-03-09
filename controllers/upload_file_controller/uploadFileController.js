@@ -1,3 +1,4 @@
+const path = require("path");
 const uuidv4 = require("uuid");
 const fs = require("fs");
 const { Student } = require("../../models");
@@ -29,27 +30,23 @@ exports.uploadFileImage = async (req, res, next) => {
     // If does not have image mime type prevent from uploading
     // if (!/^image/.test(image.mimetype)) return res.sendStatus(400)
 
-    const ext = image.name.split(".");
+    const ext = path.extname(image?.name);
+    console.log(ext);
     let filename = "";
 
     // Generate new filename
-    filename = `${uuidv4.v4()}.${ext[1]}`;
+    filename = `${uuidv4.v4()}${ext}`;
     if (
-      ext[1] == "jpg" ||
-      ext[1] == "pdf" ||
-      ext[1] == "jpeg" ||
-      ext[1] == "png" ||
-      ext[1] == "PNG"
+      ext === ".jpg" ||
+      ext === ".pdf" ||
+      ext === ".jpeg" ||
+      ext === ".png" ||
+      ext === ".PNG"
     ) {
-      if (
-        ext[1] == "jpg" ||
-        ext[1] == "jpeg" ||
-        ext[1] == "png" ||
-        ext[1] == "PNG"
-      ) {
+      if (ext === ".jpg" || ext === ".jpeg" || ext === ".png" || ext === ".PNG") {
         image.mv(`${__dirname}/../../assets/img/${filename}`);
       }
-      if (ext[1] == "pdf") {
+      if (ext == "pdf") {
         image.mv(`${__dirname}/../../assets/pdf/${filename}`);
       }
       res
@@ -65,6 +62,7 @@ exports.uploadFileImage = async (req, res, next) => {
 
     // Move the uploaded image to our upload folder
   } catch (error) {
+    error.controller = "uploadFileImage";
     next(error);
   }
 };
