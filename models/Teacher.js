@@ -32,6 +32,11 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Teacher.associate = (models) => {
+    Teacher.belongsTo(models.Branch, {
+      foreignKey: "branchId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
+    });
     Teacher.hasMany(models.Student, {
       foriegnKey: "teacherId",
       onUpdate: "RESTRICT",

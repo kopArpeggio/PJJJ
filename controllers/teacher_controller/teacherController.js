@@ -1,11 +1,18 @@
-const { sequelize, Teacher } = require("../../models");
+const { sequelize, Teacher, Branch, Faculty } = require("../../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 
 exports.getAllTeacher = async (req, res, next) => {
   try {
     const teachers = await Teacher.findAll({
-      attributes: { exclude: ["password"] },
+      include: [{ model: Branch, attributes: [], include: Faculty }],
+      attributes: {
+        include: [
+          [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
+          [sequelize.col("Branch.branch_name"), "branchName"],
+        ],
+        exclude: ["password", "updatedAt", "deletedAt", "createdAt"],
+      },
     });
 
     res.status(200).send({
