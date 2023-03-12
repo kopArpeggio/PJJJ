@@ -18,7 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-
       yearClass: {
         type: DataTypes.STRING(1),
         allowNull: false,
@@ -48,12 +47,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       documentStatus: {
-        type: DataTypes.ENUM("1", "2", "3", "4"),
-        defaultValue: "1",
-      },
-      filePdfPath: {
-        type: DataTypes.TEXT,
-        allowNull: true,
+        type: DataTypes.ENUM("1", "2", "3"),
+        defaultValue: "3",
       },
       profilePic: {
         type: DataTypes.TEXT,
@@ -69,6 +64,11 @@ module.exports = (sequelize, DataTypes) => {
   );
 
   Student.associate = (models) => {
+    Student.belongsTo(models.Pdffile, {
+      foreignKey: "pdfFileId",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
+    });
     Student.belongsTo(models.Branch, {
       foreignKey: "branchId",
       onUpdate: "RESTRICT",

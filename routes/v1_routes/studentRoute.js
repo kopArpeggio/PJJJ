@@ -10,6 +10,12 @@ router.get(
   studentController.getAllStudent
 );
 
+router.get(
+  "/get-all-student-by-status",
+  [passportJWT.isLogin],
+  studentController.getStudentByDoccumentStatus
+);
+
 // router.get(
 //   "/get-student-by-id/:id",
 //   [passportJWT.isLogin],

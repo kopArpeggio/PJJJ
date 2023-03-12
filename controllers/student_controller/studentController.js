@@ -13,6 +13,74 @@ const {
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 
+exports.getStudentByDoccumentStatus = async (req, res, next) => {
+  // req?.query || req?.params
+  const { status } = req?.query;
+  ////////////////////////////
+
+  try {
+    const student = await Student.findAll({
+      where: { documentStatus: status },
+      attributes: {
+        exclude: ["password"],
+        include: [
+          [sequelize.col("Branch.branch_name"), "branchName"],
+          [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
+          [sequelize.col("Branch.branch_name"), "branchName"],
+        ],
+      },
+      include: [
+        {
+          model: Address,
+          as: "oldAddress",
+        },
+        {
+          model: Address,
+          as: "newAddress",
+        },
+        {
+          model: Father,
+        },
+        {
+          model: Mother,
+        },
+        {
+          model: Birth,
+        },
+        {
+          model: Branch,
+          // attributes: [],
+          include: [{ model: Faculty }],
+        },
+
+        {
+          model: Work,
+          include: [
+            {
+              model: Workplace,
+              include: [
+                {
+                  model: Address,
+                },
+              ],
+            },
+          ],
+        },
+
+        // { include: [{ model: Work }] },
+      ],
+    });
+    res.status(200).send({
+      message: "Get All Student Succesful !",
+      data: student,
+      whoUserThisFunction: req.user,
+    });
+  } catch (error) {
+    error.controller = "getStudentByDoccumentStatus";
+    next(error);
+  }
+};
+
 exports.getAllStudent = async (req, res, next) => {
   try {
     const student = await Student.findAll({

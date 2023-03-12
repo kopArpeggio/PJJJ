@@ -64,8 +64,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       contactStatus: {
         type: DataTypes.ENUM("1", "2", "3"),
-        defaultValue: "1",
-        allowNull: true,
+        allowNull: false,
       },
       workingStatus: {
         type: DataTypes.ENUM("1", "2", "3"),
