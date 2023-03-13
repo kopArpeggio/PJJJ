@@ -47,8 +47,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       documentStatus: {
-        type: DataTypes.ENUM("1", "2", "3"),
-        defaultValue: "3",
+        type: DataTypes.ENUM("1", "2", "3","4"),
+        defaultValue: "4",
       },
       profilePic: {
         type: DataTypes.TEXT,

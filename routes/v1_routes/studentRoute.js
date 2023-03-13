@@ -16,6 +16,12 @@ router.get(
   studentController.getStudentByDoccumentStatus
 );
 
+router.get(
+  "/get-all-student-by-branch",
+  [passportJWT.isLogin],
+  studentController.getStudentByBranch
+);
+
 // router.get(
 //   "/get-student-by-id/:id",
 //   [passportJWT.isLogin],

@@ -12,6 +12,9 @@ const {
   Birth,
   Work,
   Admin,
+  sequelize,
+  Branch,
+  Faculty,
 } = require("../models");
 
 const opts = {};
@@ -72,6 +75,14 @@ passport.use(
 
       const teacher = await Teacher.findOne({
         where: { [Op.and]: [{ username }, { id }] },
+        include: [{ model: Branch, attributes: [], include: Faculty }],
+        attributes: {
+          include: [
+            [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
+            [sequelize.col("Branch.branch_name"), "branchName"],
+            [sequelize.col("Branch.id"), "branchId"],
+          ],
+        },
       });
       if (teacher) {
         return res(null, { teacher, Role: "teacher" });

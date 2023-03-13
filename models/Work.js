@@ -66,6 +66,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("1", "2", "3"),
         allowNull: false,
       },
+      description: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
       workingStatus: {
         type: DataTypes.ENUM("1", "2", "3"),
         allowNull: true,
@@ -78,7 +82,7 @@ module.exports = (sequelize, DataTypes) => {
       status: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
-        defaultValue: 1,
+        defaultValue: 0,
       },
     },
     {

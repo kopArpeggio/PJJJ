@@ -18,9 +18,75 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
   const { status } = req?.query;
   ////////////////////////////
 
+  const { branchId } = req?.user?.teacher?.dataValues;
   try {
     const student = await Student.findAll({
-      where: { documentStatus: status },
+      where: { [Op.and]: [{ documentStatus: status }, { branchId }] },
+      attributes: {
+        exclude: ["password"],
+        include: [
+          [sequelize.col("Branch.branch_name"), "branchName"],
+          [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
+        ],
+      },
+      include: [
+        {
+          model: Address,
+          as: "oldAddress",
+        },
+        {
+          model: Address,
+          as: "newAddress",
+        },
+        {
+          model: Father,
+        },
+        {
+          model: Mother,
+        },
+        {
+          model: Birth,
+        },
+        {
+          model: Branch,
+          // attributes: [],
+          include: [{ model: Faculty }],
+        },
+
+        {
+          model: Work,
+          include: [
+            {
+              model: Workplace,
+              include: [
+                {
+                  model: Address,
+                },
+              ],
+            },
+          ],
+        },
+
+        // { include: [{ model: Work }] },
+      ],
+    });
+    res.status(200).send({
+      message: "Get All Student Succesful !",
+      data: student,
+      whoUserThisFunction: req.user,
+    });
+  } catch (error) {
+    error.controller = "getStudentByDoccumentStatus";
+    next(error);
+  }
+};
+
+exports.getStudentByBranch = async (req, res, next) => {
+  const { branchId } = req?.user?.teacher?.dataValues;
+
+  try {
+    const student = await Student.findAll({
+      where: { branchId },
       attributes: {
         exclude: ["password"],
         include: [
@@ -73,10 +139,9 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
     res.status(200).send({
       message: "Get All Student Succesful !",
       data: student,
-      whoUserThisFunction: req.user,
     });
   } catch (error) {
-    error.controller = "getStudentByDoccumentStatus";
+    error.controller = "getAllStudent";
     next(error);
   }
 };
