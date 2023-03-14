@@ -13,15 +13,46 @@ const {
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 
+exports.getStudentByYear = async (req, res, next) => {
+  try {
+    const student = await Student.findAll({
+      attributes: [[sequelize.fn("DISTINCT", sequelize.col("year")), "year"]],
+    });
+
+    res.status(200).send({ message: "Get All Year Student.", data: student });
+  } catch (error) {
+    error.controller = "getStudentByYear";
+    next(error);
+  }
+};
+
 exports.getStudentByDoccumentStatus = async (req, res, next) => {
   // req?.query || req?.params
-  const { status } = req?.query;
+  const { status, year } = req?.query;
   ////////////////////////////
 
   const { branchId } = req?.user?.teacher?.dataValues;
   try {
+    var d = new Date();
+    var y = parseInt(d.getFullYear()) + 543;
+
     const student = await Student.findAll({
-      where: { [Op.and]: [{ documentStatus: status }, { branchId }] },
+      where:
+        year && status
+          ? {
+              [Op.and]: [{ documentStatus: status }, { branchId }, { year }],
+            }
+          : status
+          ? {
+              [Op.and]: [{ documentStatus: status }, { branchId }, { year: y }],
+            }
+          : year
+          ? {
+              [Op.and]: [{ branchId }, { year: req?.query?.year }],
+            }
+          : {
+              [Op.and]: [{ branchId }, { year: y }],
+            },
       attributes: {
         exclude: ["password"],
         include: [

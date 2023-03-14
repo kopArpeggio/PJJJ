@@ -22,6 +22,12 @@ router.get(
   studentController.getStudentByBranch
 );
 
+router.get(
+  "/get-student-year",
+  [passportJWT.isLogin],
+  studentController.getStudentByYear
+);
+
 // router.get(
 //   "/get-student-by-id/:id",
 //   [passportJWT.isLogin],
