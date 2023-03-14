@@ -80,8 +80,9 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
         },
         {
           model: Branch,
+          where: { status: true },
           // attributes: [],
-          include: [{ model: Faculty }],
+          include: [{ model: Faculty, where: { status: true } }],
         },
 
         {
@@ -208,8 +209,9 @@ exports.getAllStudent = async (req, res, next) => {
         },
         {
           model: Branch,
+          where: { status: true },
           // attributes: [],
-          include: [{ model: Faculty }],
+          include: [{ model: Faculty, where: { status: true } }],
         },
 
         {

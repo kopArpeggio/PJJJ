@@ -4,7 +4,7 @@ const { Op } = require("sequelize");
 exports.getAllBranch = async (req, res, next) => {
   try {
     const branch = await Branch.findAll({
-      include: [{ model: Faculty, attributes: [] }],
+      include: [{ model: Faculty, where: { status: true }, attributes: [] }],
       attributes: {
         include: [[sequelize.col("Faculty.faculty_name"), "facultyName"]],
         exclude: ["facultyId", "updatedAt", "deletedAt", "createdAt"],
@@ -24,7 +24,7 @@ exports.getAllBranchByStatus = async (req, res, next) => {
   try {
     const branch = await Branch.findAll({
       where: { status: true },
-      include: [{ model: Faculty, attributes: [] }],
+      include: [{ model: Faculty, where: { status: true }, attributes: [] }],
       attributes: {
         include: [[sequelize.col("Faculty.faculty_name"), "facultyName"]],
         exclude: ["facultyId", "updatedAt", "deletedAt", "createdAt"],
