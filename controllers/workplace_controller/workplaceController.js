@@ -176,7 +176,6 @@ exports.updateWorkplace = async (req, res, next) => {
       ...req.body,
     };
 
-
     if (password) {
       updateWorkplaceBody.password = await bcrypt.hash(password, 10);
     }

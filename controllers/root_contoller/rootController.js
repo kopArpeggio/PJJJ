@@ -1,6 +1,13 @@
 const db = require("../../models");
 
-const { Student, Teacher, Workplace, Admin } = require("../../models");
+const {
+  Student,
+  Teacher,
+  Workplace,
+  Admin,
+  Branch,
+  Faculty,
+} = require("../../models");
 const bcrypt = require("bcryptjs");
 const { createToken } = require("../../middleware/utils");
 const jwt = require("jsonwebtoken");
@@ -32,10 +39,32 @@ exports.login = async (req, res, next) => {
   try {
     const { username, password } = req.body;
     var user;
-    user = await Student.findOne({ where: { stuNo: username } });
+    user = await Student.findOne({
+      where: { stuNo: username },
+      include: [
+        {
+          model: Branch,
+          where: { status: true },
+          // attributes: [],
+          include: [{ model: Faculty, where: { status: true } }],
+        },
+
+        // { include: [{ model: Work }] },
+      ],
+    });
 
     if (!user) {
-      user = await Teacher.findOne({ where: { username } });
+      user = await Teacher.findOne({
+        include: [
+          {
+            model: Branch,
+            attributes: [],
+            include: [{ model: Faculty, where: { status: true } }],
+            where: { status: true },
+          },
+        ],
+        where: { username },
+      });
     }
 
     if (!user) {

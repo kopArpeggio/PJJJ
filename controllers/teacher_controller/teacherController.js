@@ -5,7 +5,14 @@ const bcrypt = require("bcryptjs");
 exports.getAllTeacher = async (req, res, next) => {
   try {
     const teachers = await Teacher.findAll({
-      include: [{ model: Branch, attributes: [], include: Faculty }],
+      include: [
+        {
+          model: Branch,
+          attributes: [],
+          include: [{ model: Faculty, where: { status: true } }],
+          where: { status: true },
+        },
+      ],
       attributes: {
         include: [
           [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
