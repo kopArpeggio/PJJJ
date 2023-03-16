@@ -20,11 +20,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       yearClass: {
         type: DataTypes.STRING(1),
-        allowNull: false,
+        allowNull: true,
       },
       year: {
         type: DataTypes.STRING(20),
-        allowNull: false,
+        allowNull: true,
       },
       gpa: {
         type: DataTypes.DECIMAL(11, 2),

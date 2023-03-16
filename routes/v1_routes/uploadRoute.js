@@ -10,4 +10,10 @@ router.post(
   uploadController.uploadFileImage
 );
 
+router.post(
+  "/upload-csv-student",
+  [passportJWT.isLogin],
+  uploadController.uploadFileCsv
+);
+
 module.exports = router;

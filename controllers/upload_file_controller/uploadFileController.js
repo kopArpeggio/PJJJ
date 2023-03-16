@@ -1,7 +1,9 @@
 const path = require("path");
 const uuidv4 = require("uuid");
 const fs = require("fs");
-const { Student } = require("../../models");
+const { Student, sequelize } = require("../../models");
+const csv = require("csv-parser");
+const stream = require("stream");
 
 exports.uploadFileImage = async (req, res, next) => {
   try {
@@ -43,7 +45,12 @@ exports.uploadFileImage = async (req, res, next) => {
       ext === ".png" ||
       ext === ".PNG"
     ) {
-      if (ext === ".jpg" || ext === ".jpeg" || ext === ".png" || ext === ".PNG") {
+      if (
+        ext === ".jpg" ||
+        ext === ".jpeg" ||
+        ext === ".png" ||
+        ext === ".PNG"
+      ) {
         image.mv(`${__dirname}/../../assets/img/${filename}`);
       }
       if (ext == "pdf") {
@@ -63,6 +70,42 @@ exports.uploadFileImage = async (req, res, next) => {
     // Move the uploaded image to our upload folder
   } catch (error) {
     error.controller = "uploadFileImage";
+    next(error);
+  }
+};
+
+exports.uploadFileCsv = async (req, res, next) => {
+  const { CSV } = req?.files;
+
+  const bufferStream = new stream.PassThrough();
+  bufferStream.end(CSV.data);
+  const t = await sequelize.transaction();
+
+  try {
+    const users = [];
+    bufferStream
+      .pipe(csv())
+      .on("data", (row) => {
+        const user = {
+          firstname: row?.firstname,
+          lastname: row?.lastname,
+          stuNo: row?.stu_no,
+          gpa: row?.gpa,
+          phoneNumber: row?.phone_number.replace(/'/g, ""), // remove the single quote before phone number
+          email: row?.email,
+          idCardNumber: row?.id_card_number,
+          password: row?.password,
+        };
+        users.push(user);
+      })
+      .on("end", async () => {
+        await Student.bulkCreate(users, { transaction: t });
+        await t.commit();
+        res.status(201).send({ message: "Create Students Successful." });
+      });
+  } catch (error) {
+    await t.rollback();
+    error.controller = "uploadFileCsv";
     next(error);
   }
 };
