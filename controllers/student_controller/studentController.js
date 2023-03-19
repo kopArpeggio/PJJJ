@@ -113,6 +113,72 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
   }
 };
 
+exports.getStudentByCompany = async (req, res, next) => {
+  const { id } = req?.user?.workplace?.dataValues;
+
+  try {
+    const student = await Student.findAll({
+      attributes: {
+        exclude: ["password"],
+        include: [
+          [sequelize.col("Branch.branch_name"), "branchName"],
+          [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
+          [sequelize.col("Branch.branch_name"), "branchName"],
+        ],
+      },
+      include: [
+        {
+          model: Address,
+          as: "oldAddress",
+        },
+        {
+          model: Address,
+          as: "newAddress",
+        },
+        {
+          model: Father,
+        },
+        {
+          model: Mother,
+        },
+        {
+          model: Birth,
+        },
+        {
+          model: Branch,
+          where: { status: true },
+          // attributes: [],
+          include: [{ model: Faculty, where: { status: true } }],
+        },
+
+        {
+          model: Work,
+          where: { workplaceId: id },
+          include: [
+            {
+              model: Workplace,
+              include: [
+                {
+                  model: Address,
+                },
+              ],
+            },
+          ],
+        },
+
+        // { include: [{ model: Work }] },
+      ],
+    });
+    res.status(200).send({
+      message: "Get All Student Succesful !",
+      data: student,
+    });
+  } catch (error) {
+    error.controller = "getAllStudent";
+    next(error);
+  }
+};
+
 exports.getStudentByBranch = async (req, res, next) => {
   const { branchId } = req?.user?.teacher?.dataValues;
 

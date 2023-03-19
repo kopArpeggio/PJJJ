@@ -34,6 +34,12 @@ router.get(
 //   studentController.getSingleStudentById
 // );
 
+router.get(
+  "/get-student-by-company",
+  [passportJWT.isLogin],
+  studentController.getStudentByCompany
+);
+
 router.post("/create", [passportJWT.isLogin], studentController.createStudent);
 
 router.put(

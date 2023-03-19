@@ -33,7 +33,6 @@ exports.uploadFileImage = async (req, res, next) => {
     // if (!/^image/.test(image.mimetype)) return res.sendStatus(400)
 
     const ext = path.extname(image?.name);
-    console.log(ext);
     let filename = "";
 
     // Generate new filename
@@ -87,6 +86,7 @@ exports.uploadFileCsv = async (req, res, next) => {
       .pipe(csv())
       .on("data", (row) => {
         const user = {
+          id: row?.id,
           firstname: row?.firstname,
           lastname: row?.lastname,
           stuNo: row?.stu_no,
@@ -99,7 +99,19 @@ exports.uploadFileCsv = async (req, res, next) => {
         users.push(user);
       })
       .on("end", async () => {
-        await Student.bulkCreate(users, { transaction: t });
+        await Student.bulkCreate(users, {
+          updateOnDuplicate: [
+            "firstname",
+            "lastname",
+            "gpa",
+            "phoneNumber",
+            "email",
+            "stuNo",
+            "idCardNumber",
+            "password",
+          ],
+          transaction: t,
+        });
         await t.commit();
         res.status(201).send({ message: "Create Students Successful." });
       });

@@ -18,10 +18,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      faculty: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
     },
     {
       tableName: "teacher",
