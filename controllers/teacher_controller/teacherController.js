@@ -72,8 +72,8 @@ exports.createTeacher = async (req, res, next) => {
 };
 
 exports.updateTeacher = async (req, res, next) => {
-  const { id } = req.params;
-  const { firstname, lastname } = req.body;
+  const { id } = req?.params;
+  const { firstname, lastname, password } = req?.body;
   const t = await sequelize.transaction();
 
   try {
@@ -97,10 +97,14 @@ exports.updateTeacher = async (req, res, next) => {
       throw error;
     }
 
+    const updateBody = req?.body;
+
+    if (password) {
+      updateBody.password = await bcrypt.hash(password, 10);
+    }
+
     await Teacher.update(
-      {
-        ...req.body,
-      },
+      updateBody,
       {
         where: { id },
         transaction: t,

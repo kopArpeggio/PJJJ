@@ -114,10 +114,12 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
 };
 
 exports.getStudentByCompany = async (req, res, next) => {
+  const { status } = req?.query;
   const { id } = req?.user?.workplace?.dataValues;
 
   try {
     const student = await Student.findAll({
+      where: status ? { [Op.and]: [{ documentStatus: status }] } : "",
       attributes: {
         exclude: ["password"],
         include: [
@@ -213,8 +215,9 @@ exports.getStudentByBranch = async (req, res, next) => {
         },
         {
           model: Branch,
+          where: { status: true },
           // attributes: [],
-          include: [{ model: Faculty }],
+          include: [{ model: Faculty, where: { status: true } }],
         },
 
         {

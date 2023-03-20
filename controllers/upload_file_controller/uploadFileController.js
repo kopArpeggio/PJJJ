@@ -4,6 +4,7 @@ const fs = require("fs");
 const { Student, sequelize } = require("../../models");
 const csv = require("csv-parser");
 const stream = require("stream");
+const bcrypt = require("bcryptjs");
 
 exports.uploadFileImage = async (req, res, next) => {
   try {
@@ -82,6 +83,8 @@ exports.uploadFileCsv = async (req, res, next) => {
 
   try {
     const users = [];
+    const promises = [];
+
     bufferStream
       .pipe(csv())
       .on("data", (row) => {
@@ -91,14 +94,22 @@ exports.uploadFileCsv = async (req, res, next) => {
           lastname: row?.lastname,
           stuNo: row?.stu_no,
           gpa: row?.gpa,
-          phoneNumber: row?.phone_number.replace(/'/g, ""), // remove the single quote before phone number
+          phoneNumber: row?.phone_number.replace(/'/g, ""),
           email: row?.email,
           idCardNumber: row?.id_card_number,
-          password: row?.password,
         };
+        if (row?.password) {
+          const passwordPromise = bcrypt
+            .hash(row?.password, 10)
+            .then((hashedPassword) => {
+              user.password = hashedPassword;
+            });
+          promises.push(passwordPromise);
+        }
         users.push(user);
       })
       .on("end", async () => {
+        await Promise.all(promises);
         await Student.bulkCreate(users, {
           updateOnDuplicate: [
             "firstname",

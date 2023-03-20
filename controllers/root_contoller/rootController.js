@@ -1,4 +1,5 @@
 const db = require("../../models");
+const { Op } = require("sequelize");
 
 const {
   Student,
@@ -72,7 +73,9 @@ exports.login = async (req, res, next) => {
     }
 
     if (!user) {
-      user = await Workplace.findOne({ where: { username } });
+      user = await Workplace.findOne({
+        where: { [Op.and]: [{ username }, { status: true }] },
+      });
     }
 
     if (!user) {
