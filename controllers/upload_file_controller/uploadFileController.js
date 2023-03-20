@@ -96,16 +96,18 @@ exports.uploadFileCsv = async (req, res, next) => {
           gpa: row?.gpa,
           phoneNumber: row?.phone_number.replace(/'/g, ""),
           email: row?.email,
-          idCardNumber: row?.id_card_number,
+          idCardNumber: row?.id_card_number.replace(/'/g, ""),
         };
-        if (row?.password) {
-          const passwordPromise = bcrypt
-            .hash(row?.password, 10)
-            .then((hashedPassword) => {
-              user.password = hashedPassword;
-            });
-          promises.push(passwordPromise);
-        }
+
+        console.log(row?.stu_no);
+
+        const passwordPromise = bcrypt
+          .hash(row?.stu_no, 10)
+          .then((hashedPassword) => {
+            user.password = hashedPassword;
+          });
+        promises.push(passwordPromise);
+
         users.push(user);
       })
       .on("end", async () => {
@@ -119,11 +121,12 @@ exports.uploadFileCsv = async (req, res, next) => {
             "email",
             "stuNo",
             "idCardNumber",
-            "password",
           ],
           transaction: t,
         });
+
         await t.commit();
+
         res.status(201).send({ message: "Create Students Successful." });
       });
   } catch (error) {
