@@ -99,8 +99,6 @@ exports.uploadFileCsv = async (req, res, next) => {
           idCardNumber: row?.id_card_number.replace(/'/g, ""),
         };
 
-        console.log(row?.stu_no);
-
         const passwordPromise = bcrypt
           .hash(row?.stu_no, 10)
           .then((hashedPassword) => {
