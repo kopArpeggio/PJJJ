@@ -91,6 +91,8 @@ exports.login = async (req, res, next) => {
       throw error;
     }
 
+    
+
     const token = createToken(user.id, user.username, user.stuNo);
 
     const { exp } = jwt.decode(token);

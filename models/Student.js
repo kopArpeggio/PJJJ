@@ -54,6 +54,13 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+
+      beneficiaryFirstname: {
+        type: DataTypes.TEXT,
+      },
+      beneficiaryLastname: {
+        type: DataTypes.TEXT,
+      },
     },
     {
       tableName: "student",

@@ -16,4 +16,10 @@ router.post(
   uploadController.uploadFileCsv
 );
 
+router.post(
+  "/upload-xlsx-lab",
+  [passportJWT.isLogin],
+  uploadController.uploadFileLab
+);
+
 module.exports = router;
