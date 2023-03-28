@@ -1,4 +1,10 @@
-const { sequelize, Workplace, Address } = require("../../models");
+const {
+  sequelize,
+  Workplace,
+  Address,
+  Student,
+  Work,
+} = require("../../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
 
@@ -64,6 +70,45 @@ exports.getAllWorkplaceWithStatus = async (req, res, next) => {
       .send({ message: "Get All Workplace Succesful.", data: workplace });
   } catch (error) {
     error.controller = "getAllWorkplace";
+    next(error);
+  }
+};
+
+exports.getWorkplaceWithStudentById = async (req, res, next) => {
+  const { id } = req?.params;
+  try {
+    const student = await Student.findAll({
+      include: [
+        {
+          paranoid: false,
+          model: Work,
+          attributes: [],
+          include: [{ model: Workplace, attributes: [] }],
+          where: { workplaceId: id },
+        },
+      ],
+      attributes: {
+        exclude: [
+          "password",
+          "updatedAt",
+          "deletedAt",
+          "createdAt",
+          "birthId",
+          "fatherId",
+          "motherId",
+          "oldAddressId",
+          "newAddressId",
+        ],
+        include: [
+          [sequelize.col("Work.job_title"), "jobTitle"],
+          [sequelize.col("Work.job_detail"), "jobDetail"],
+        ],
+      },
+    });
+
+    res.status(200).send({ message: "Get All Workplace", data: student });
+  } catch (error) {
+    error.controller = "getWorkplaceWithStudentById";
     next(error);
   }
 };

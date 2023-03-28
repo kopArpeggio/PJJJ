@@ -22,6 +22,12 @@ router.get(
   workplaceController.getWorkplaceById
 );
 
+router.get(
+  "/get-workplace-with-student-by-id/:id",
+  [passportJWT.isLogin],
+  workplaceController.getWorkplaceWithStudentById
+);
+
 router.post("/create", workplaceController.createWorkPlace);
 
 router.put(

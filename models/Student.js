@@ -1,3 +1,5 @@
+const bcrypt = require("bcrypt");
+
 module.exports = (sequelize, DataTypes) => {
   const Student = sequelize.define(
     "Student",
@@ -69,6 +71,13 @@ module.exports = (sequelize, DataTypes) => {
       paranoid: true,
     }
   );
+
+  Student.beforeBulkCreate((students) => {
+    students.forEach((student) => {
+      const salt = bcrypt.genSaltSync(10);
+      student.password = bcrypt.hashSync(student?.stuNo?.toString(), salt);
+    });
+  });
 
   Student.associate = (models) => {
     Student.belongsTo(models.Pdffile, {
