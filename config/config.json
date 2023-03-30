@@ -1,9 +1,10 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
+    "username": "admin",
+    "password": "FVt5EXgB",
+    "port": "16198",
     "database": "kop_project",
-    "host": "127.0.0.1",
+    "host": "mysql-118560-0.cloudclusters.net",
     "dialect": "mysql"
   },
   "test": {

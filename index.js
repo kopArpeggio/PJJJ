@@ -42,6 +42,8 @@ app.use(
   })
 );
 
+
+
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 app.use("/api", Routes);
