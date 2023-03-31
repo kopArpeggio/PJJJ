@@ -8,4 +8,5 @@ module.exports = {
   adminRouter: require("./adminRoute"),
   branchRouter: require("./branchRoute"),
   facultyRouter: require("./facultyRoute"),
+  linebotRouter: require("./chatbotRoute"),
 };

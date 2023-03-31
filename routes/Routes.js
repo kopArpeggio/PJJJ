@@ -31,4 +31,6 @@ router.use("/branch", branchRouter);
 
 router.use("/faculty", facultyRouter);
 
+router.use("/line", router)
+
 module.exports = router;
