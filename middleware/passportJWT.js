@@ -15,6 +15,7 @@ const {
   sequelize,
   Branch,
   Faculty,
+  Pdffile,
 } = require("../models");
 
 const opts = {};
@@ -42,6 +43,9 @@ passport.use(
             },
             {
               model: Father,
+            },
+            {
+              model: Pdffile,
             },
             {
               model: Mother,

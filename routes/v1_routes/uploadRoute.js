@@ -17,6 +17,12 @@ router.post(
 );
 
 router.post(
+  "/uploads-document-file",
+  [passportJWT.isLogin],
+  uploadController.uploadFileDocument
+);
+
+router.post(
   "/upload-xlsx-lab",
   [passportJWT.isLogin],
   uploadController.uploadFileLab

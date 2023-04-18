@@ -2,13 +2,13 @@ module.exports = (sequelize, DataTypes) => {
   const Pdffile = sequelize.define(
     "Pdffile",
     {
-      pdfName1: {
+      fcn1: {
         type: DataTypes.STRING,
       },
-      pdfName2: {
+      fcn2: {
         type: DataTypes.STRING,
       },
-      pdfName3: {
+      regis: {
         type: DataTypes.STRING,
       },
       pdfName4: {

@@ -1,7 +1,7 @@
 const path = require("path");
 const uuidv4 = require("uuid");
 const fs = require("fs");
-const { Student, sequelize } = require("../../models");
+const { Student, sequelize, Pdffile } = require("../../models");
 const csv = require("csv-parser");
 const stream = require("stream");
 const bcrypt = require("bcryptjs");
@@ -43,12 +43,100 @@ exports.uploadFileImage = async (req, res, next) => {
       if (ext === ".jpg" || ext === ".jpeg" || ext === ".png") {
         image.mv(`${__dirname}/../../assets/img/${filename}`);
       }
-      if (ext == "pdf") {
+      if (ext == ".pdf") {
         image.mv(`${__dirname}/../../assets/pdf/${filename}`);
       }
       res
         .status(200)
         .send({ message: "Upload File Succesful.", data: filename });
+    } else {
+      const error = new Error("Your File Type is a not supported to system");
+      error.statusCode = "400";
+      throw error;
+    }
+
+    // res.status(400).send({ message: "Your File Should be JPG or PDF ONLY" });
+
+    // Move the uploaded image to our upload folder
+  } catch (error) {
+    error.controller = "uploadFileImage";
+    next(error);
+  }
+};
+
+exports.uploadFileDocument = async (req, res, next) => {
+  try {
+    const files = req?.files;
+    const { id } = req?.user?.student;
+    // If no image submitted, exit
+    if (!files) {
+      const error = new Error("Doesn't have a file");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const student = await Student.findOne({
+      where: { id },
+      include: [
+        {
+          model: Pdffile,
+          attributes: [],
+        },
+      ],
+      attributes: {
+        include: [
+          [sequelize.col("Pdffile.fcn1"), "fcn1"],
+          [sequelize.col("Pdffile.fcn2"), "fcn2"],
+          [sequelize.col("Pdffile.pdf_name4"), "pdfName4"],
+        ],
+        exclude: ["password", "updatedAt", "deletedAt", "createdAt"],
+      },
+    });
+    console.log(student);
+    if (student?.fcn1) {
+      fs.unlink(`${__dirname}/../../assets/pdf/${student?.fcn1}`, (err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+      });
+    }
+    if (student?.fcn2) {
+      fs.unlink(`${__dirname}/../../assets/pdf/${student?.fcn2}`, (err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+      });
+    }
+    if (student?.pdfName4) {
+      fs.unlink(`${__dirname}/../../assets/pdf/${student?.pdfName4}`, (err) => {
+        if (err) {
+          console.log(err);
+          return;
+        }
+      });
+    }
+
+    const ext = path.extname(files?.fcn1?.name).toLowerCase();
+
+    // Generate new filename
+    const fcn1 = `${uuidv4.v4()}${ext}`;
+    const fcn2 = `${uuidv4.v4()}${ext}`;
+    const pdfName4 = `${uuidv4.v4()}${ext}`;
+
+    if (ext === ".pdf") {
+      if (ext == ".pdf") {
+        files?.fcn1?.mv(`${__dirname}/../../assets/pdf/${fcn1}`);
+        files?.fcn2?.mv(`${__dirname}/../../assets/pdf/${fcn2}`);
+        files?.pdfName4?.mv(`${__dirname}/../../assets/pdf/${pdfName4}`);
+      }
+      res.status(200).send({
+        message: "Upload File Succesful.",
+        fcn1,
+        fcn2,
+        pdfName4,
+      });
     } else {
       const error = new Error("Your File Type is a not supported to system");
       error.statusCode = "400";

@@ -49,18 +49,20 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       documentStatus: {
-        type: DataTypes.ENUM("0", "1", "2", "3", "4"),
+        type: DataTypes.ENUM("0", "1", "2", "3", "4", "5", "6", "7", "8","9"),
         defaultValue: "4",
       },
       profilePic: {
         type: DataTypes.TEXT,
         allowNull: true,
       },
-
       beneficiaryFirstname: {
         type: DataTypes.TEXT,
       },
       beneficiaryLastname: {
+        type: DataTypes.TEXT,
+      },
+      beneficiaryPhoneNumber: {
         type: DataTypes.TEXT,
       },
     },

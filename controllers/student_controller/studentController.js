@@ -9,6 +9,7 @@ const {
   Branch,
   Workplace,
   Faculty,
+  Pdffile,
 } = require("../../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
@@ -413,6 +414,7 @@ exports.updateStudent = async (req, res, next) => {
     newAddress,
     latlong,
     finalAddress,
+    pdfFile,
   } = req?.body;
 
   try {
@@ -582,6 +584,33 @@ exports.updateStudent = async (req, res, next) => {
           },
           {
             where: { id: work?.id },
+            transaction: t,
+          }
+        );
+      }
+    }
+
+
+    if (pdfFile) {
+      if (!pdfFile?.id) {
+        const pdfFile = await Pdffile.create(
+          {
+            ...req?.body?.pdfFile,
+          },
+          {
+            transaction: t,
+          }
+        );
+        stu.pdfFileId = pdfFile?.id;
+      }
+
+      if (pdfFile?.id) {
+        await Pdffile.update(
+          {
+            ...req.body.pdfFile,
+          },
+          {
+            where: { id: pdfFile?.id },
             transaction: t,
           }
         );
