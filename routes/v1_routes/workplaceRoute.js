@@ -42,4 +42,16 @@ router.delete(
   workplaceController.deleteWorkplace
 );
 
+router.post(
+  "/create-by-student",
+  [passportJWT.isLogin],
+  workplaceController.createWorkPlaceByStudent
+);
+
+router.get(
+  "/get-all-workplace-by-approve",
+  [passportJWT.isLogin],
+  workplaceController.getApproveWorkplace
+);
+
 module.exports = router;

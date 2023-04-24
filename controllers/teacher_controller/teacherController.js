@@ -148,3 +148,43 @@ exports.deleteTeacher = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.updateTeacherPassword = async (req, res, next) => {
+  const t = await sequelize.transaction();
+
+  const { oldPassword, newPassword } = req?.body;
+  const { id } = req?.params;
+  try {
+    const teacher = await Teacher.findOne({ where: { id } });
+
+    const compare = await bcrypt.compare(
+      oldPassword.toString(),
+      teacher?.password
+    );
+    if (!compare) {
+      const error = new Error("รหัสผ่านของคุณไม่ตรงกัน");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const password = await bcrypt.hash(newPassword.toString(), 10);
+
+    await Teacher.update(
+      {
+        password: password,
+      },
+      {
+        where: { id },
+        transaction: t,
+      }
+    );
+
+    await t.commit();
+
+    res.status(200).send({ message: "เปลี่ยนรหัสผ่านเสร็จสิ้น !" });
+  } catch (error) {
+    await t.rollback();
+    error.controller = "updateStudentPassword";
+    next(error);
+  }
+};

@@ -40,10 +40,11 @@ exports.getAllWorkplace = async (req, res, next) => {
     next(error);
   }
 };
+
 exports.getAllWorkplaceWithStatus = async (req, res, next) => {
   try {
     const workplace = await Workplace.findAll({
-      where: { status: true },
+      where: { [Op.and]: [{ status: true }, { approve: true }] },
       include: [{ model: Address, attributes: [] }],
       attributes: {
         include: [
@@ -83,7 +84,13 @@ exports.getWorkplaceWithStudentById = async (req, res, next) => {
           paranoid: false,
           model: Work,
           attributes: [],
-          include: [{ model: Workplace, attributes: [] }],
+          include: [
+            {
+              model: Workplace,
+              attributes: [],
+              where: { [Op.and]: [{ status: true }, { approve: true }] },
+            },
+          ],
           where: { workplaceId: id },
         },
       ],
@@ -149,6 +156,41 @@ exports.getWorkplaceById = async (req, res, next) => {
   }
 };
 
+exports.getApproveWorkplace = async (req, res, next) => {
+  try {
+    const company = await Workplace.findAll({
+      where: { approve: false },
+      include: [{ model: Address, attributes: [] }],
+      attributes: {
+        include: [
+          [sequelize.col("Address.house_number"), "houseNumber"],
+          [sequelize.col("Address.district"), "district"],
+          [sequelize.col("Address.amphoe"), "amphoe"],
+          [sequelize.col("Address.province"), "province"],
+          [sequelize.col("Address.zip_code"), "zipCode"],
+          [sequelize.col("Address.latitude"), "latitude"],
+          [sequelize.col("Address.longtitude"), "longtitude"],
+        ],
+        exclude: [
+          "password",
+          "AddressId",
+          "updatedAt",
+          "deletedAt",
+          "createdAt",
+        ],
+      },
+    });
+
+    res.status(200).send({
+      message: "Get Not Approve Workplace Succesful ! ",
+      data: company,
+    });
+  } catch (error) {
+    error.constroller = "getApproveWorkplace";
+    next(error);
+  }
+};
+
 exports.createWorkPlace = async (req, res, next) => {
   const t = await sequelize.transaction();
   const { password } = req?.body;
@@ -158,7 +200,7 @@ exports.createWorkPlace = async (req, res, next) => {
 
     const createdAddress = await Address.create(
       {
-        ...req.body,
+        ...req?.body,
       },
       {
         transaction: t,
@@ -184,6 +226,39 @@ exports.createWorkPlace = async (req, res, next) => {
   } catch (error) {
     await t.rollback();
     error.controller = "createWorkPlace";
+    next(error);
+  }
+};
+
+exports.createWorkPlaceByStudent = async (req, res, next) => {
+  const t = await sequelize.transaction();
+  console.log(req?.body);
+  try {
+    const createdAddress = await Address.create(
+      {
+        ...req?.body,
+      },
+      {
+        transaction: t,
+      }
+    );
+
+    const company = await Workplace.create(
+      {
+        ...req?.body,
+        addressId: createdAddress?.id,
+      },
+      { transaction: t }
+    );
+
+    await t.commit();
+
+    res
+      .status(200)
+      .send({ message: "Create Company Succesful!", data: company });
+  } catch (error) {
+    await t.rollback();
+    error.controller = "createWorkPlaceByStudent";
     next(error);
   }
 };
@@ -218,7 +293,7 @@ exports.updateWorkplace = async (req, res, next) => {
     }
 
     const updateWorkplaceBody = {
-      ...req.body,
+      ...req?.body,
     };
 
     if (password) {

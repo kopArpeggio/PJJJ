@@ -28,6 +28,12 @@ router.get(
   studentController.getStudentByYear
 );
 
+router.get(
+  "/get-all-student-by-year",
+  [passportJWT.isLogin],
+  studentController.getAllStudentByYear
+);
+
 // router.get(
 //   "/get-student-by-id/:id",
 //   [passportJWT.isLogin],
@@ -46,6 +52,12 @@ router.put(
   "/update-by-id/:id",
   [passportJWT.isLogin],
   studentController.updateStudent
+);
+
+router.put(
+  "/update-password-by-id/:id",
+  [passportJWT.isLogin],
+  studentController.updateStudentPassword
 );
 
 router.delete("/delete-by-id/:id", studentController.deleteStudent);

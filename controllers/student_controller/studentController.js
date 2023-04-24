@@ -114,6 +114,80 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
   }
 };
 
+
+
+exports.getAllStudentByYear = async (req, res, next) => {
+  // req?.query || req?.params
+  const { year } = req?.query;
+  ////////////////////////////
+
+  try {
+    const student = await Student.findAll({
+      where: year
+        ? {
+            [Op.and]: [{ year: req?.query?.year }],
+          }
+        : "",
+      attributes: {
+        exclude: ["password"],
+        include: [
+          [sequelize.col("Branch.branch_name"), "branchName"],
+          [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
+        ],
+      },
+      include: [
+        {
+          model: Address,
+          as: "oldAddress",
+        },
+        {
+          model: Address,
+          as: "newAddress",
+        },
+        {
+          model: Father,
+        },
+        {
+          model: Mother,
+        },
+        {
+          model: Birth,
+        },
+        {
+          model: Branch,
+          where: { status: true },
+          // attributes: [],
+          include: [{ model: Faculty, where: { status: true } }],
+        },
+
+        {
+          model: Work,
+          include: [
+            {
+              model: Workplace,
+              include: [
+                {
+                  model: Address,
+                },
+              ],
+            },
+          ],
+        },
+
+        // { include: [{ model: Work }] },
+      ],
+    });
+    res.status(200).send({
+      message: "Get All Student Succesful !",
+      data: student,
+      whoUserThisFunction: req.user,
+    });
+  } catch (error) {
+    error.controller = "getStudentByDoccumentStatus";
+    next(error);
+  }
+};
+
 exports.getStudentByCompany = async (req, res, next) => {
   const { status } = req?.query;
   const { id } = req?.user?.workplace?.dataValues;
@@ -417,6 +491,8 @@ exports.updateStudent = async (req, res, next) => {
     pdfFile,
   } = req?.body;
 
+  console.log(work);
+
   try {
     if (req?.body?.stu?.password) {
       const hashedPassword = await bcrypt.hash(req?.body?.stu?.password, 10);
@@ -590,7 +666,6 @@ exports.updateStudent = async (req, res, next) => {
       }
     }
 
-
     if (pdfFile) {
       if (!pdfFile?.id) {
         const pdfFile = await Pdffile.create(
@@ -688,6 +763,46 @@ exports.uploadPdfFile = async (req, res, next) => {
   } catch (error) {
     await t.rollback();
     error.controller = "uploadPdfFile";
+    next(error);
+  }
+};
+
+exports.updateStudentPassword = async (req, res, next) => {
+  const t = await sequelize.transaction();
+
+  const { oldPassword, newPassword } = req?.body;
+  const { id } = req?.params;
+  try {
+    const student = await Student.findOne({ where: { id } });
+
+    const compare = await bcrypt.compare(
+      oldPassword.toString(),
+      student?.password
+    );
+    if (!compare) {
+      const error = new Error("รหัสผ่านของคุณไม่ตรงกัน");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    const password = await bcrypt.hash(newPassword.toString(), 10);
+
+    await Student.update(
+      {
+        password: password,
+      },
+      {
+        where: { id },
+        transaction: t,
+      }
+    );
+
+    await t.commit();
+
+    res.status(200).send({ message: "เปลี่ยนรหัสผ่านเสร็จสิ้น !" });
+  } catch (error) {
+    await t.rollback();
+    error.controller = "updateStudentPassword";
     next(error);
   }
 };

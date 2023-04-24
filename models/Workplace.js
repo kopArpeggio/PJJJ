@@ -6,18 +6,27 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      
       status: {
         type: DataTypes.BOOLEAN,
         allowNull: true,
         defaultValue: 1,
       },
+
       username: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
+
       password: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+      },
+
+      approve: {
+        type: DataTypes.BOOLEAN,
+        allowNull: true,
+        defaultValue: 1,
       },
     },
 

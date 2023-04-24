@@ -9,6 +9,7 @@ const {
   adminRouter,
   branchRouter,
   facultyRouter,
+  linebotRouter,
 } = require("./v1_routes");
 
 const router = express.Router();
@@ -31,6 +32,6 @@ router.use("/branch", branchRouter);
 
 router.use("/faculty", facultyRouter);
 
-router.use("/line", router)
+router.use("/line", linebotRouter)
 
 module.exports = router;

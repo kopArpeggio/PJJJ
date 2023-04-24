@@ -9,6 +9,7 @@ exports.test = async (req, res, next) => {
   const client = new Client(config);
 
   try {
+
     let stuId = req?.body?.queryResult?.parameters?.stuId?.toString();
     console.log(stuId);
     let userid =
@@ -20,6 +21,8 @@ exports.test = async (req, res, next) => {
       type: "text",
       text: `ชื่อจริง:${student?.firstname} นามสกุล:${student?.lastname}`,
     };
+
+
 
     if (student?.documentStatus === "0") {
       message.text = "สำเร็จทุกขั้นตอนแล้ว";
