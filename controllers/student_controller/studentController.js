@@ -59,6 +59,10 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
         include: [
           [sequelize.col("Branch.branch_name"), "branchName"],
           [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
+          [sequelize.col("Work.boss_firstname"), "bossFirstname"],
+          [sequelize.col("Work.boss_lastname"), "bossLastname"],
+          [sequelize.col("Work.boss_position"), "bossPosition"],
+
         ],
       },
       include: [
