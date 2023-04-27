@@ -22,6 +22,8 @@ router.get(
   studentController.getStudentByBranch
 );
 
+router.get("/get-student-by-approve-company-status/:id", [passportJWT.isLogin], studentController.getStudentByNotApproveWorkplace)
+
 router.get(
   "/get-student-year",
   [passportJWT.isLogin],

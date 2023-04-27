@@ -41,19 +41,19 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
       where:
         year && status
           ? {
-              [Op.and]: [{ documentStatus: status }, { branchId }, { year }],
-            }
+            [Op.and]: [{ documentStatus: status }, { branchId }, { year }],
+          }
           : status
-          ? {
+            ? {
               [Op.and]: [{ documentStatus: status }, { branchId }, { year: y }],
             }
-          : year
-          ? {
-              [Op.and]: [{ branchId }, { year: req?.query?.year }],
-            }
-          : {
-              [Op.and]: [{ branchId }, { year: y }],
-            },
+            : year
+              ? {
+                [Op.and]: [{ branchId }, { year: req?.query?.year }],
+              }
+              : {
+                [Op.and]: [{ branchId }, { year: y }],
+              },
       attributes: {
         exclude: ["password"],
         include: [
@@ -62,7 +62,6 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
           [sequelize.col("Work.boss_firstname"), "bossFirstname"],
           [sequelize.col("Work.boss_lastname"), "bossLastname"],
           [sequelize.col("Work.boss_position"), "bossPosition"],
-
         ],
       },
       include: [
@@ -129,8 +128,8 @@ exports.getAllStudentByYear = async (req, res, next) => {
     const student = await Student.findAll({
       where: year
         ? {
-            [Op.and]: [{ year: req?.query?.year }],
-          }
+          [Op.and]: [{ year: req?.query?.year }],
+        }
         : "",
       attributes: {
         exclude: ["password"],
@@ -770,6 +769,24 @@ exports.uploadPdfFile = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getStudentByNotApproveWorkplace = async (req, res, next) => {
+
+  const { id } = req?.params
+
+  console.log(id)
+
+  try {
+    const work = await Work.findOne({ where: { workplaceId: id } })
+    const student = await Student.findOne({ where: { workId: work?.id } })
+
+    res.status(200).send({ message: "Get Student By Not Approve Workplace Succesful ! ", data: student })
+
+  } catch (error) {
+    error.controller = "getStudentByNotApproveWorkplace"
+    next(error)
+  }
+}
 
 exports.updateStudentPassword = async (req, res, next) => {
   const t = await sequelize.transaction();
