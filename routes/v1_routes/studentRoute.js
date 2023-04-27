@@ -22,7 +22,11 @@ router.get(
   studentController.getStudentByBranch
 );
 
-router.get("/get-student-by-approve-company-status/:id", [passportJWT.isLogin], studentController.getStudentByNotApproveWorkplace)
+router.get(
+  "/get-student-by-approve-company-status/:id",
+  [passportJWT.isLogin],
+  studentController.getStudentByNotApproveWorkplace
+);
 
 router.get(
   "/get-student-year",
@@ -60,6 +64,18 @@ router.put(
   "/update-password-by-id/:id",
   [passportJWT.isLogin],
   studentController.updateStudentPassword
+);
+
+router.get(
+  "/get-all-student-by-empty-teacher",
+  [passportJWT.isLogin],
+  studentController.getAllStudentEmptyTeacher
+);
+
+router.get(
+  "/get-all-student-by-evaluate",
+  [passportJWT.isLogin],
+  studentController.getAllStudentByEvaluate
 );
 
 router.delete("/delete-by-id/:id", studentController.deleteStudent);

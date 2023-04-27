@@ -41,19 +41,19 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
       where:
         year && status
           ? {
-            [Op.and]: [{ documentStatus: status }, { branchId }, { year }],
-          }
+              [Op.and]: [{ documentStatus: status }, { branchId }, { year }],
+            }
           : status
-            ? {
+          ? {
               [Op.and]: [{ documentStatus: status }, { branchId }, { year: y }],
             }
-            : year
-              ? {
-                [Op.and]: [{ branchId }, { year: req?.query?.year }],
-              }
-              : {
-                [Op.and]: [{ branchId }, { year: y }],
-              },
+          : year
+          ? {
+              [Op.and]: [{ branchId }, { year: req?.query?.year }],
+            }
+          : {
+              [Op.and]: [{ branchId }, { year: y }],
+            },
       attributes: {
         exclude: ["password"],
         include: [
@@ -117,7 +117,161 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
   }
 };
 
+exports.getAllStudentByEvaluate = async (req, res, next) => {
+  const { year } = req?.query;
+  const { id } = req?.user?.teacher;
 
+  try {
+    var d = new Date();
+    var y = parseInt(d.getFullYear()) + 543;
+    const student = await Student.findAll({
+      where: year
+        ? {
+            [Op.and]: [{ teacherId: id }, { year: req?.query?.year }],
+          }
+        : {
+            [Op.and]: [{ teacherId: id }, { year: y }],
+          },
+
+      attributes: {
+        exclude: ["password"],
+        include: [
+          [sequelize.col("Branch.branch_name"), "branchName"],
+          [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
+          [sequelize.col("Work.boss_firstname"), "bossFirstname"],
+          [sequelize.col("Work.boss_lastname"), "bossLastname"],
+          [sequelize.col("Work.boss_position"), "bossPosition"],
+        ],
+      },
+      include: [
+        {
+          model: Address,
+          as: "oldAddress",
+        },
+        {
+          model: Address,
+          as: "newAddress",
+        },
+        {
+          model: Father,
+        },
+        {
+          model: Mother,
+        },
+        {
+          model: Birth,
+        },
+        {
+          model: Branch,
+          where: { status: true },
+          // attributes: [],
+          include: [{ model: Faculty, where: { status: true } }],
+        },
+
+        {
+          model: Work,
+          include: [
+            {
+              model: Workplace,
+              include: [
+                {
+                  model: Address,
+                },
+              ],
+            },
+          ],
+        },
+
+        // { include: [{ model: Work }] },
+      ],
+    });
+
+    res.status(200).send({
+      message: "Get All Student By Evaluate Succesful !",
+      data: student,
+    });
+  } catch (error) {
+    error.controller = "getAllStudentByEvaluate";
+    next(error);
+  }
+};
+
+exports.getAllStudentEmptyTeacher = async (req, res, next) => {
+  const { year } = req?.query;
+  try {
+    var d = new Date();
+    var y = parseInt(d.getFullYear()) + 543;
+    const student = await Student.findAll({
+      where: year
+        ? {
+            [Op.and]: [{ teacherId: null }, { year: req?.query?.year }],
+          }
+        : {
+            [Op.and]: [{ teacherId: null }, { year: y }],
+          },
+
+      attributes: {
+        exclude: ["password"],
+        include: [
+          [sequelize.col("Branch.branch_name"), "branchName"],
+          [sequelize.col("Branch.Faculty.faculty_name"), "facultyName"],
+          [sequelize.col("Work.boss_firstname"), "bossFirstname"],
+          [sequelize.col("Work.boss_lastname"), "bossLastname"],
+          [sequelize.col("Work.boss_position"), "bossPosition"],
+        ],
+      },
+      include: [
+        {
+          model: Address,
+          as: "oldAddress",
+        },
+        {
+          model: Address,
+          as: "newAddress",
+        },
+        {
+          model: Father,
+        },
+        {
+          model: Mother,
+        },
+        {
+          model: Birth,
+        },
+        {
+          model: Branch,
+          where: { status: true },
+          // attributes: [],
+          include: [{ model: Faculty, where: { status: true } }],
+        },
+
+        {
+          model: Work,
+          include: [
+            {
+              model: Workplace,
+              include: [
+                {
+                  model: Address,
+                },
+              ],
+            },
+          ],
+        },
+
+        // { include: [{ model: Work }] },
+      ],
+    });
+
+    res.status(200).send({
+      message: "Get Student By Empty Teacher Succesful ! ",
+      data: student,
+    });
+  } catch (error) {
+    error.controller = "getAllStudentEmptyTeacher";
+    next(error);
+  }
+};
 
 exports.getAllStudentByYear = async (req, res, next) => {
   // req?.query || req?.params
@@ -128,8 +282,8 @@ exports.getAllStudentByYear = async (req, res, next) => {
     const student = await Student.findAll({
       where: year
         ? {
-          [Op.and]: [{ year: req?.query?.year }],
-        }
+            [Op.and]: [{ year: req?.query?.year }],
+          }
         : "",
       attributes: {
         exclude: ["password"],
@@ -494,7 +648,7 @@ exports.updateStudent = async (req, res, next) => {
     pdfFile,
   } = req?.body;
 
-  console.log(work);
+  console.log(stu);
 
   try {
     if (req?.body?.stu?.password) {
@@ -771,22 +925,23 @@ exports.uploadPdfFile = async (req, res, next) => {
 };
 
 exports.getStudentByNotApproveWorkplace = async (req, res, next) => {
+  const { id } = req?.params;
 
-  const { id } = req?.params
-
-  console.log(id)
+  console.log(id);
 
   try {
-    const work = await Work.findOne({ where: { workplaceId: id } })
-    const student = await Student.findOne({ where: { workId: work?.id } })
+    const work = await Work.findOne({ where: { workplaceId: id } });
+    const student = await Student.findOne({ where: { workId: work?.id } });
 
-    res.status(200).send({ message: "Get Student By Not Approve Workplace Succesful ! ", data: student })
-
+    res.status(200).send({
+      message: "Get Student By Not Approve Workplace Succesful ! ",
+      data: student,
+    });
   } catch (error) {
-    error.controller = "getStudentByNotApproveWorkplace"
-    next(error)
+    error.controller = "getStudentByNotApproveWorkplace";
+    next(error);
   }
-}
+};
 
 exports.updateStudentPassword = async (req, res, next) => {
   const t = await sequelize.transaction();
