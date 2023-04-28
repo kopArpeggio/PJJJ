@@ -103,13 +103,10 @@ exports.updateTeacher = async (req, res, next) => {
       updateBody.password = await bcrypt.hash(password, 10);
     }
 
-    await Teacher.update(
-      updateBody,
-      {
-        where: { id },
-        transaction: t,
-      }
-    );
+    await Teacher.update(updateBody, {
+      where: { id },
+      transaction: t,
+    });
 
     await t.commit();
 
@@ -157,12 +154,18 @@ exports.updateTeacherPassword = async (req, res, next) => {
   try {
     const teacher = await Teacher.findOne({ where: { id } });
 
+    if (!teacher) {
+      const error = new Error("ไม่มีรายชื่่อคุณอยู่ในระบบ");
+      error.statusCode = 400;
+      throw error;
+    }
+
     const compare = await bcrypt.compare(
       oldPassword.toString(),
-      teacher?.password
+      teacher?.password.toString()
     );
     if (!compare) {
-      const error = new Error("รหัสผ่านของคุณไม่ตรงกัน");
+      const error = new Error("รหัสผ่านเก่าของคุณไม่ตรงกัน");
       error.statusCode = 400;
       throw error;
     }
@@ -184,7 +187,7 @@ exports.updateTeacherPassword = async (req, res, next) => {
     res.status(200).send({ message: "เปลี่ยนรหัสผ่านเสร็จสิ้น !" });
   } catch (error) {
     await t.rollback();
-    error.controller = "updateStudentPassword";
+    error.controller = "updateTeacherPassword";
     next(error);
   }
 };

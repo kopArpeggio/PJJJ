@@ -232,8 +232,19 @@ exports.createWorkPlace = async (req, res, next) => {
 
 exports.createWorkPlaceByStudent = async (req, res, next) => {
   const t = await sequelize.transaction();
+  const { companyName } = req?.body;
   console.log(req?.body);
   try {
+    const exist = await Workplace.findOne({ where: { companyName } });
+
+    if (exist) {
+      const error = new Error(
+        "ไม่สามารถเพิ่มได้เนื่องจากมีชื่อสถานประกอบการนี้ในระบบอยู่แล้ว"
+      );
+      error.statusCode = 400;
+      throw error;
+    }
+
     const createdAddress = await Address.create(
       {
         ...req?.body,
