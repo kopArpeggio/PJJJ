@@ -648,7 +648,6 @@ exports.updateStudent = async (req, res, next) => {
     pdfFile,
   } = req?.body;
 
-
   try {
     if (req?.body?.stu?.password) {
       const hashedPassword = await bcrypt.hash(req?.body?.stu?.password, 10);
