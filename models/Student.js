@@ -69,6 +69,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      profileReg: {
+        type: DataTypes.TEXT,
+        allowNull:true
+      },
       beneficiaryFirstname: {
         type: DataTypes.TEXT,
       },
@@ -78,6 +82,7 @@ module.exports = (sequelize, DataTypes) => {
       beneficiaryPhoneNumber: {
         type: DataTypes.TEXT,
       },
+      
     },
     {
       tableName: "student",

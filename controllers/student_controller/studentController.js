@@ -648,7 +648,6 @@ exports.updateStudent = async (req, res, next) => {
     pdfFile,
   } = req?.body;
 
-  console.log(stu);
 
   try {
     if (req?.body?.stu?.password) {

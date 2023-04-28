@@ -19,9 +19,21 @@ exports.uploadFileImage = async (req, res, next) => {
     }
 
     const student = await Student.findOne({ where: { id } });
-    if (student?.profilePic) {
+    if (student?.profilePic ) {
       fs.unlink(
         `${__dirname}/../../assets/img/${student?.profilePic}`,
+        (err) => {
+          if (err) {
+            console.log(err);
+            return;
+          }
+        }
+      );
+    }
+
+    if (student?.profileReg) {
+      fs.unlink(
+        `${__dirname}/../../assets/img/${student?.profileReg}`,
         (err) => {
           if (err) {
             console.log(err);
