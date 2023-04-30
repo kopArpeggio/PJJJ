@@ -42,19 +42,19 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
       where:
         year && status
           ? {
-            [Op.and]: [{ documentStatus: status }, { branchId }, { year }],
-          }
+              [Op.and]: [{ documentStatus: status }, { branchId }, { year }],
+            }
           : status
-            ? {
+          ? {
               [Op.and]: [{ documentStatus: status }, { branchId }, { year: y }],
             }
-            : year
-              ? {
-                [Op.and]: [{ branchId }, { year: req?.query?.year }],
-              }
-              : {
-                [Op.and]: [{ branchId }, { year: y }],
-              },
+          : year
+          ? {
+              [Op.and]: [{ branchId }, { year: req?.query?.year }],
+            }
+          : {
+              [Op.and]: [{ branchId }, { year: y }],
+            },
       attributes: {
         exclude: ["password"],
         include: [
@@ -128,11 +128,11 @@ exports.getAllStudentByEvaluate = async (req, res, next) => {
     const student = await Student.findAll({
       where: year
         ? {
-          [Op.and]: [{ teacherId: id }, { year: req?.query?.year }],
-        }
+            [Op.and]: [{ teacherId: id }, { year: req?.query?.year }],
+          }
         : {
-          [Op.and]: [{ teacherId: id }, { year: y }],
-        },
+            [Op.and]: [{ teacherId: id }, { year: y }],
+          },
 
       attributes: {
         exclude: ["password"],
@@ -208,11 +208,11 @@ exports.getAllStudentEmptyTeacher = async (req, res, next) => {
     const student = await Student.findAll({
       where: year
         ? {
-          [Op.and]: [{ teacherId: null }, { year: req?.query?.year }],
-        }
+            [Op.and]: [{ teacherId: null }, { year: req?.query?.year }],
+          }
         : {
-          [Op.and]: [{ teacherId: null }, { year: y }],
-        },
+            [Op.and]: [{ teacherId: null }, { year: y }],
+          },
 
       attributes: {
         exclude: ["password"],
@@ -286,8 +286,8 @@ exports.getAllStudentByYear = async (req, res, next) => {
     const student = await Student.findAll({
       where: year
         ? {
-          [Op.and]: [{ year: req?.query?.year }],
-        }
+            [Op.and]: [{ year: req?.query?.year }],
+          }
         : "",
       attributes: {
         exclude: ["password"],
@@ -758,7 +758,7 @@ exports.updateStudent = async (req, res, next) => {
       if (!father?.id) {
         const father = await Father.create(
           {
-            ...father,
+            ...req?.body?.father,
           },
           {
             transaction: t,
@@ -770,7 +770,7 @@ exports.updateStudent = async (req, res, next) => {
       if (father?.id) {
         await Father.update(
           {
-            ...father,
+            ...req?.body?.father,
           },
           {
             where: { id: father?.id },
@@ -784,7 +784,7 @@ exports.updateStudent = async (req, res, next) => {
       if (!mother?.id) {
         const mother = await Mother.create(
           {
-            ...mother,
+            ...req?.body?.mother,
           },
           {
             transaction: t,
@@ -796,7 +796,7 @@ exports.updateStudent = async (req, res, next) => {
       if (mother?.id) {
         await Mother.update(
           {
-            ...mother,
+            ...req?.body?.mother,
           },
           {
             where: { id: mother?.id },
