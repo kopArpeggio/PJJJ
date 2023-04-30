@@ -5,7 +5,7 @@ const passportJWT = require("../../middleware/passportJWT");
 const router = express.Router();
 
 router.put(
-  "update-evaluate-by-id/:id",
+  "/update-evaluate-by-id/:id",
   [passportJWT.isLogin],
   evaluateController.updateEvaluateById
 );

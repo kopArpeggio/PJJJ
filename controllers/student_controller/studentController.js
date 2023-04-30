@@ -42,19 +42,19 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
       where:
         year && status
           ? {
-              [Op.and]: [{ documentStatus: status }, { branchId }, { year }],
-            }
+            [Op.and]: [{ documentStatus: status }, { branchId }, { year }],
+          }
           : status
-          ? {
+            ? {
               [Op.and]: [{ documentStatus: status }, { branchId }, { year: y }],
             }
-          : year
-          ? {
-              [Op.and]: [{ branchId }, { year: req?.query?.year }],
-            }
-          : {
-              [Op.and]: [{ branchId }, { year: y }],
-            },
+            : year
+              ? {
+                [Op.and]: [{ branchId }, { year: req?.query?.year }],
+              }
+              : {
+                [Op.and]: [{ branchId }, { year: y }],
+              },
       attributes: {
         exclude: ["password"],
         include: [
@@ -128,11 +128,11 @@ exports.getAllStudentByEvaluate = async (req, res, next) => {
     const student = await Student.findAll({
       where: year
         ? {
-            [Op.and]: [{ teacherId: id }, { year: req?.query?.year }],
-          }
+          [Op.and]: [{ teacherId: id }, { year: req?.query?.year }],
+        }
         : {
-            [Op.and]: [{ teacherId: id }, { year: y }],
-          },
+          [Op.and]: [{ teacherId: id }, { year: y }],
+        },
 
       attributes: {
         exclude: ["password"],
@@ -170,6 +170,9 @@ exports.getAllStudentByEvaluate = async (req, res, next) => {
         },
 
         {
+          model: Evaluate,
+        },
+        {
           model: Work,
           include: [
             {
@@ -205,11 +208,11 @@ exports.getAllStudentEmptyTeacher = async (req, res, next) => {
     const student = await Student.findAll({
       where: year
         ? {
-            [Op.and]: [{ teacherId: null }, { year: req?.query?.year }],
-          }
+          [Op.and]: [{ teacherId: null }, { year: req?.query?.year }],
+        }
         : {
-            [Op.and]: [{ teacherId: null }, { year: y }],
-          },
+          [Op.and]: [{ teacherId: null }, { year: y }],
+        },
 
       attributes: {
         exclude: ["password"],
@@ -283,8 +286,8 @@ exports.getAllStudentByYear = async (req, res, next) => {
     const student = await Student.findAll({
       where: year
         ? {
-            [Op.and]: [{ year: req?.query?.year }],
-          }
+          [Op.and]: [{ year: req?.query?.year }],
+        }
         : "",
       attributes: {
         exclude: ["password"],

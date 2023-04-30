@@ -105,6 +105,11 @@ module.exports = (sequelize, DataTypes) => {
       onUpdate: "RESTRICT",
       onDelete: "RESTRICT",
     });
+    Student.belongsTo(models.Evaluate, {
+      foreignKey: "evaluateIdß",
+      onUpdate: "RESTRICT",
+      onDelete: "RESTRICT",
+    });
     Student.belongsTo(models.Branch, {
       foreignKey: "branchId",
       onUpdate: "RESTRICT",

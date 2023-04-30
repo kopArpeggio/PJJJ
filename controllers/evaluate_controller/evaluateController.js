@@ -13,11 +13,12 @@ exports.updateEvaluateById = async (req, res, next) => {
       throw error;
     }
 
+    await Evaluate.update(req?.body, { where: { id }, transaction: t });
+
     await t.commit();
 
     res.status(200).send({ message: "Update Evaluate By Id Succesful !" });
 
-    await Evaluate.update({ where: { id }, transaction: t });
   } catch (error) {
     await t.rollback();
     error.controller = "updateEvaluateById";
