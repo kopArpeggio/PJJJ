@@ -9,4 +9,5 @@ module.exports = {
   branchRouter: require("./branchRoute"),
   facultyRouter: require("./facultyRoute"),
   linebotRouter: require("./chatbotRoute"),
+  evaluateRouter: require("./evaluateRoute"),
 };

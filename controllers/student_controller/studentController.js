@@ -10,6 +10,7 @@ const {
   Workplace,
   Faculty,
   Pdffile,
+  Evaluate,
 } = require("../../models");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
@@ -611,6 +612,10 @@ exports.createStudent = async (req, res, next) => {
       createBody.oldAddressId = address.id;
     }
 
+    const evaluate = await Evaluate.create({}, { transaction: t });
+
+    createBody.evaluateId = evaluate?.id;
+
     const hasedPassword = await bcrypt.hash(password, 10);
 
     const student = await Student.create(
@@ -689,6 +694,11 @@ exports.updateStudent = async (req, res, next) => {
       latitude: latlong?.latitude,
       longtitude: latlong?.longtitude,
     };
+
+    if (!student?.evaluateId) {
+      const evaluate = await Evaluate.create({}, { transaction: t });
+      stu.evaluateId = evaluate?.id;
+    }
 
     if (newAddress) {
       if (!newAddress?.id) {

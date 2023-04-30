@@ -9,4 +9,5 @@ module.exports = {
   branchController: require("./brach_controller/branchController"),
   facultyController: require("./faculty_controller/facultyController"),
   lineBotController: require("./linebot_controller/lineBotController"),
+  evaluateController: require("./evaluate_controller/evaluateController"),
 };
