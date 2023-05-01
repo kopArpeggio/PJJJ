@@ -35,7 +35,10 @@ module.exports = (sequelize, DataTypes) => {
       fcn9_2Point: {
         type: DataTypes.INTEGER,
       },
-      fcn9_2Comment: {
+      fcn9_2Strength: {
+        type: DataTypes.TEXT,
+      },
+      fcn9_2Improvement: {
         type: DataTypes.TEXT,
       },
       fcn10_1Point: {

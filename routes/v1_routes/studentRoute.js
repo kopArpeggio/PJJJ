@@ -78,8 +78,8 @@ router.get(
   studentController.getAllStudentByEvaluate
 );
 
-router.delete("/delete-by-id/:id", studentController.deleteStudent);
+router.delete("/delete-by-id/:id",[passportJWT.isLogin], studentController.deleteStudent);
 
-router.put("/upload-pdf-file", studentController.uploadPdfFile);
+router.put("/upload-pdf-file", [passportJWT.isLogin] ,studentController.uploadPdfFile);
 
 module.exports = router;
