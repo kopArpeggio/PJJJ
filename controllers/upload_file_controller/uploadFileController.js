@@ -307,3 +307,81 @@ exports.uploadFileLab = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.uploadFilexlsxTeacher = async (req, res, next) => {
+  const t = await sequelize.transaction();
+
+  try {
+    const { CSV } = req?.files;
+    const workbook = XLSX.read(CSV.data, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const data = XLSX.utils.sheet_to_json(worksheet);
+
+    for (const val of data) {
+      const duplicate = await Student.findOne(
+        val?.id
+          ? {
+              where: {
+                [Op.and]: [
+                  { firstname: val?.firstname },
+                  { lastname: val?.lastname },
+                  { id: { [Op.ne]: val?.id } },
+                ],
+              },
+            }
+          : {
+              where: {
+                [Op.and]: [
+                  { firstname: val?.firstname },
+                  { lastname: val?.lastname },
+                ],
+              },
+            }
+      );
+      if (duplicate) {
+        const err = new Error("Some User is Duplicate");
+        err.statusCode = 400;
+        throw err;
+      }
+    }
+
+    const body = data?.map((val) => ({
+      ...val,
+      id: val?.id,
+      username: val?.username,
+
+      branchId: parseInt(val?.major?.split(":")[0].trim()),
+    }));
+
+    const createBody = body?.map(
+      (val) => (
+        delete val?.id_card_number,
+        delete val?.phone_number,
+        delete val?.stu_no,
+        {
+          ...val,
+        }
+      )
+    );
+
+    await Student.bulkCreate(createBody, {
+      updateOnDuplicate: [
+        "firstname",
+        "lastname",
+        "email",
+        "username",
+        "branchId",
+      ],
+      transaction: t,
+    });
+
+    await t.commit();
+
+    res.status(200).send(createBody);
+  } catch (error) {
+    await t.rollback();
+    error.controller = "uploadFileLab";
+    next(error);
+  }
+};

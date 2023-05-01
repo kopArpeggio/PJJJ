@@ -27,6 +27,13 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  Teacher.beforeBulkCreate((teachers) => {
+    teachers.forEach((teacher) => {
+      const salt = bcrypt.genSaltSync(10);
+      teacher.password = bcrypt.hashSync(teacher?.username?.toString(), salt);
+    });
+  });
+
   Teacher.associate = (models) => {
     Teacher.belongsTo(models.Branch, {
       foreignKey: "branchId",

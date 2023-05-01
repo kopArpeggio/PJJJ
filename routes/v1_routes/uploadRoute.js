@@ -28,4 +28,6 @@ router.post(
   uploadController.uploadFileLab
 );
 
+router.post("/upload-xlsx-teachers",[passportJWT.isLogin],uploadController.uploadFilexlsxTeacher)
+
 module.exports = router;
