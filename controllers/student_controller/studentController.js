@@ -128,10 +128,10 @@ exports.getAllStudentByEvaluate = async (req, res, next) => {
     const student = await Student.findAll({
       where: year
         ? {
-            [Op.and]: [{ teacherId: id }, { year: req?.query?.year }],
+            [Op.and]: [{ teacherId: id }, { year: req?.query?.year }, {documentStatus:"7"}],
           }
         : {
-            [Op.and]: [{ teacherId: id }, { year: y }],
+          [Op.and]: [{ teacherId: id }, { year: y }, { documentStatus: "7" }],
           },
 
       attributes: {
