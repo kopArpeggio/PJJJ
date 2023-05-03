@@ -1,7 +1,7 @@
 const path = require("path");
 const uuidv4 = require("uuid");
 const fs = require("fs");
-const { Student, sequelize, Pdffile } = require("../../models");
+const { Student, sequelize, Pdffile, Teacher } = require("../../models");
 const csv = require("csv-parser");
 const stream = require("stream");
 const bcrypt = require("bcryptjs");
@@ -19,7 +19,7 @@ exports.uploadFileImage = async (req, res, next) => {
     }
 
     const student = await Student.findOne({ where: { id } });
-    if (student?.profilePic ) {
+    if (student?.profilePic) {
       fs.unlink(
         `${__dirname}/../../assets/img/${student?.profilePic}`,
         (err) => {
@@ -319,7 +319,7 @@ exports.uploadFilexlsxTeacher = async (req, res, next) => {
     const data = XLSX.utils.sheet_to_json(worksheet);
 
     for (const val of data) {
-      const duplicate = await Student.findOne(
+      const duplicate = await Teacher.findOne(
         val?.id
           ? {
               where: {
@@ -365,7 +365,7 @@ exports.uploadFilexlsxTeacher = async (req, res, next) => {
       )
     );
 
-    await Student.bulkCreate(createBody, {
+    await Teacher.bulkCreate(createBody, {
       updateOnDuplicate: [
         "firstname",
         "lastname",

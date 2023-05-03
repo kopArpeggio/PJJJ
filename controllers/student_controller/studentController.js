@@ -71,8 +71,14 @@ exports.getStudentByDoccumentStatus = async (req, res, next) => {
           as: "oldAddress",
         },
         {
+          model: Pdffile,
+        },
+        {
           model: Address,
           as: "newAddress",
+        },
+        {
+          model: Evaluate,
         },
         {
           model: Father,
@@ -128,10 +134,14 @@ exports.getAllStudentByEvaluate = async (req, res, next) => {
     const student = await Student.findAll({
       where: year
         ? {
-            [Op.and]: [{ teacherId: id }, { year: req?.query?.year }, {documentStatus:"7"}],
+            [Op.and]: [
+              { teacherId: id },
+              { year: req?.query?.year },
+              { documentStatus: "0" },
+            ],
           }
         : {
-          [Op.and]: [{ teacherId: id }, { year: y }, { documentStatus: "7" }],
+            [Op.and]: [{ teacherId: id }, { year: y }, { documentStatus: "0" }],
           },
 
       attributes: {
@@ -651,6 +661,7 @@ exports.updateStudent = async (req, res, next) => {
     father,
     birthData,
     newAddress,
+    oldAddress,
     latlong,
     finalAddress,
     pdfFile,
@@ -723,6 +734,31 @@ exports.updateStudent = async (req, res, next) => {
           },
           {
             where: { id: newAddress?.id },
+            transaction: t,
+          }
+        );
+      }
+    }
+    if (oldAddress) {
+      if (!oldAddress?.id) {
+        const address = await Address.create(
+          {
+            ...req?.body?.oldAddress,
+          },
+          {
+            transaction: t,
+          }
+        );
+        stu.oldAddress = address.id;
+      }
+
+      if (oldAddress?.id) {
+        await Address.update(
+          {
+            ...req?.body?.oldAddress,
+          },
+          {
+            where: { id: oldAddress?.id },
             transaction: t,
           }
         );
