@@ -82,6 +82,9 @@ module.exports = (sequelize, DataTypes) => {
       beneficiaryPhoneNumber: {
         type: DataTypes.TEXT,
       },
+      beneficiaryRelevant: {
+        type: DataTypes.TEXT,
+      },
       
     },
     {
